@@ -1,34 +1,26 @@
-import { useState } from "react";
-import { MdDescription } from "react-icons/md";
-import { IoChatbubblesOutline } from "react-icons/io5";
-import AuthModal from "./AuthModal";
-
 function Hero() {
-  const [showAuth, setShowAuth] = useState(false);
-
   return (
-    <section className="py-8 px-5 text-center">
-      <h1 className="text-6xl font-bold mb-4">AI Visa Success Advisor</h1>
-      <p className="text-lg text-gray-700 mb-6">Your intelligent partner for student visa success.</p>
+    <section className="py-16 px-5 bg-gradient-to-br from-blue-50 to-indigo-50">
+      <div className="max-w-6xl mx-auto flex items-center gap-12">
+        {/* Left Content */}
+        <div className="flex-1">
+          <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-4 leading-tight">
+            Unlock Your Dream of Studying Abroad with AI Precision
+          </h1>
+          <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+            Our AI-powered platform guides you through every step of the student visa application, ensuring accuracy, efficiency, and peace of mind.
+          </p>
+        </div>
 
-      <div className="flex justify-center gap-4">
-        <button 
-          onClick={() => setShowAuth(true)}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white border border-transparent shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-2xl hover:bg-white hover:text-blue-700 hover:border-blue-700 hover:bg-none flex items-center gap-2"
-        >
-          <MdDescription className="text-current text-xl" />
-          Start with Form Mode
-        </button>
-        <button 
-          onClick={() => setShowAuth(true)}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white border border-transparent shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-2xl hover:bg-white hover:text-blue-700 hover:border-blue-700 hover:bg-none flex items-center gap-2"
-        >
-          <IoChatbubblesOutline className="text-current text-xl" />
-          Start Interview Prep
-        </button>
+        {/* Right Image */}
+        <div className="flex-1 hidden lg:flex justify-center">
+          <img
+            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop"
+            alt="Student using laptop"
+            className="rounded-lg shadow-lg object-cover w-full max-w-sm h-80"
+          />
+        </div>
       </div>
-
-      {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
     </section>
   );
 }

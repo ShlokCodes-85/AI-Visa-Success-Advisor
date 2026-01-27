@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 
-export const authenticateToken = (req, res, next) => {
+// Alias used by routes; keeps compatibility if middleware name changes.
+export const protect = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
@@ -16,3 +17,6 @@ export const authenticateToken = (req, res, next) => {
     next();
   });
 };
+
+// Backward-compatible export if other modules import authenticateToken directly.
+export const authenticateToken = protect;

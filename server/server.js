@@ -5,6 +5,8 @@ import session from "express-session";
 import passport from "passport";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
+import chatRoutes from "./routes/chats.js";
+import applicationRoutes from "./routes/applications.js";
 import { configurePassport } from "./config/passport.js";
 
 // Load environment variables
@@ -56,6 +58,8 @@ mongoose
 
 // Routes
 app.use("/auth", authRoutes);
+app.use("/api/chats", chatRoutes);
+app.use("/api/applications", applicationRoutes);
 
 // Health check route
 app.get("/", (req, res) => {

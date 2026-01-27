@@ -1,4 +1,5 @@
 import { Calendar } from 'lucide-react';
+import FormField from '../../../components/FormField';
 
 const countries = [
   'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua and Barbuda',
@@ -34,34 +35,37 @@ const countries = [
   'Zambia', 'Zimbabwe'
 ];
 
-export default function PersonalDetails({ formData, handleInputChange }) {
+export default function PersonalDetails({ formData, handleInputChange, errors = {} }) {
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-900 mb-2">Personal Details</h2>
       <p className="text-gray-600 mb-8">Please provide your personal details for the student visa application.</p>
 
       <div className="grid grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleInputChange}
-            placeholder="John Doe"
-            className="w-full px-4 py-3 border border-black bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-          />
-        </div>
+        <FormField
+          label="Full Name"
+          name="fullName"
+          value={formData.fullName}
+          onChange={handleInputChange}
+          placeholder="John Doe"
+          error={errors.fullName}
+        />
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+          {errors.dateOfBirth && (
+            <p className="text-red-500 text-sm font-medium mb-2">* {errors.dateOfBirth}</p>
+          )}
           <div className="relative">
             <input
               type="date"
               name="dateOfBirth"
               value={formData.dateOfBirth}
               onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-black bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all cursor-pointer"
+              max={new Date().toISOString().split('T')[0]}
+              className={`w-full px-4 py-3 border ${
+                errors.dateOfBirth ? "border-red-500" : "border-black"
+              } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all cursor-pointer`}
             />
             <Calendar className="absolute right-4 top-3.5 w-5 h-5 text-black pointer-events-none" />
           </div>
@@ -69,11 +73,16 @@ export default function PersonalDetails({ formData, handleInputChange }) {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+          {errors.gender && (
+            <p className="text-red-500 text-sm font-medium mb-2">* {errors.gender}</p>
+          )}
           <select
             name="gender"
             value={formData.gender || ''}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-black bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+            className={`w-full px-4 py-3 border ${
+              errors.gender ? "border-red-500" : "border-black"
+            } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select your gender</option>
             <option value="Male">Male</option>
@@ -82,37 +91,38 @@ export default function PersonalDetails({ formData, handleInputChange }) {
           </select>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Email ID</label>
-          <input
-            type="email"
-            name="contactEmail"
-            value={formData.contactEmail}
-            onChange={handleInputChange}
-            placeholder="john.doe@example.com"
-            className="w-full px-4 py-3 border border-black bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-          />
-        </div>
+        <FormField
+          label="Email ID"
+          name="contactEmail"
+          type="email"
+          value={formData.contactEmail}
+          onChange={handleInputChange}
+          placeholder="john.doe@example.com"
+          error={errors.contactEmail}
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-          <input
-            type="tel"
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            onChange={handleInputChange}
-            placeholder="+91 80970 58099"
-            className="w-full px-4 py-3 border border-black bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-          />
-        </div>
+        <FormField
+          label="Phone Number"
+          name="phoneNumber"
+          type="tel"
+          value={formData.phoneNumber}
+          onChange={handleInputChange}
+          placeholder="+91 80970 58099"
+          error={errors.phoneNumber}
+        />
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Nationality</label>
+          {errors.nationality && (
+            <p className="text-red-500 text-sm font-medium mb-2">* {errors.nationality}</p>
+          )}
           <select
             name="nationality"
             value={formData.nationality}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-black bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+            className={`w-full px-4 py-3 border ${
+              errors.nationality ? "border-red-500" : "border-black"
+            } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select your nationality</option>
             {countries.map((country) => (
@@ -124,11 +134,16 @@ export default function PersonalDetails({ formData, handleInputChange }) {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Country of Residency</label>
+          {errors.countryOfResidency && (
+            <p className="text-red-500 text-sm font-medium mb-2">* {errors.countryOfResidency}</p>
+          )}
           <select
             name="countryOfResidency"
             value={formData.countryOfResidency || ''}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-black bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+            className={`w-full px-4 py-3 border ${
+              errors.countryOfResidency ? "border-red-500" : "border-black"
+            } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select country of residency</option>
             {countries.map((country) => (

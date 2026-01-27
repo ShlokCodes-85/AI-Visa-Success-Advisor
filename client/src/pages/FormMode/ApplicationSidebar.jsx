@@ -12,7 +12,7 @@ export default function Sidebar({ sections, currentSection, setCurrentSection, c
               onClick={() => {
                 setCurrentSection(section.id);
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all border ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all border focus:outline-none ${
                 currentSection === section.id
                   ? "bg-blue-50 border-blue-500 text-blue-600 font-medium"
                   : "bg-white border-black text-black hover:bg-gray-50"

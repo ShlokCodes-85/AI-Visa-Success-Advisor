@@ -74,6 +74,32 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Testimonials marquee */
+.testimonials-marquee {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: testimonials-scroll 38s linear infinite;
+}
+
+.testimonials-marquee:hover {
+  animation-play-state: paused;
+}
+
+.testimonial-card {
+  min-width: 300px;
+  max-width: 360px;
+}
+
+@keyframes testimonials-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 /* Buttons */
 button {
   padding: 10px 16px;

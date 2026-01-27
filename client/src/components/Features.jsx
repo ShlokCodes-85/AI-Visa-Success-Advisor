@@ -32,8 +32,14 @@ function Features() {
   ];
 
   return (
-    <section className="py-5 px-5">
-      <div className="group/container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+    <section id="features" className="py-12 px-5">
+      <div className="max-w-6xl mx-auto text-center mb-10">
+        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
+          Key Features Designed For Your Success
+        </h2>
+      </div>
+
+      <div className="group/container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {features.map((feature, index) => (
           <FeatureCard
             key={index}
