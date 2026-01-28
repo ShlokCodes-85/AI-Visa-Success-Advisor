@@ -2,8 +2,10 @@ import FeatureCard from "./FeatureCard";
 import { MdDescription, MdTrackChanges } from "react-icons/md";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { HiOutlineChartBar } from "react-icons/hi2";
+import useLazyLoad from '../hooks/useLazyLoad';
 
 function Features() {
+  const { elementRef, isVisible } = useLazyLoad();
   const features = [
     {
       title: "Comprehensive Form Guidance",
@@ -32,7 +34,7 @@ function Features() {
   ];
 
   return (
-    <section id="features" className="py-12 px-5">
+    <section ref={elementRef} id="features" className="py-12 px-5" style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.6s ease-in' }}>
       <div className="max-w-6xl mx-auto text-center mb-10">
         <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
           Key Features Designed For Your Success

@@ -1,6 +1,9 @@
+import useLazyLoad from '../hooks/useLazyLoad';
+
 function Footer() {
+  const { elementRef, isVisible } = useLazyLoad();
   return (
-    <footer className="bg-white border-t border-gray-200 text-gray-800">
+    <footer ref={elementRef} className="bg-white border-t border-gray-200 text-gray-800" style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.6s ease-in' }}>
       <div className="max-w-6xl mx-auto px-5 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <div className="space-y-2">
           <div className="flex items-center gap-2">

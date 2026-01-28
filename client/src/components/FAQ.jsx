@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
+import useLazyLoad from '../hooks/useLazyLoad';
 
 function FAQ() {
+  const { elementRef, isVisible } = useLazyLoad();
   const faqs = [
     {
       q: "How does the AI personalize my visa plan?",
@@ -28,7 +30,7 @@ function FAQ() {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <section id="faq" className="py-16 px-5 bg-white">
+    <section ref={elementRef} id="faq" className="py-16 px-5 bg-white" style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.6s ease-in' }}>
       <div className="max-w-5xl mx-auto">
         <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-10">
           Frequently Asked Questions

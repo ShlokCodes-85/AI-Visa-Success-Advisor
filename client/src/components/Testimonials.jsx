@@ -1,4 +1,7 @@
+import useLazyLoad from '../hooks/useLazyLoad';
+
 function Testimonials() {
+  const { elementRef, isVisible } = useLazyLoad();
   const testimonials = [
     {
       name: "Aisha Khan",
@@ -60,7 +63,7 @@ function Testimonials() {
   const looped = [...testimonials, ...testimonials];
 
   return (
-    <section id="testimonials" className="py-16 px-5 bg-white">
+    <section ref={elementRef} id="testimonials" className="py-16 px-5 bg-white" style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.6s ease-in' }}>
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
@@ -77,12 +80,17 @@ function Testimonials() {
               {looped.map((testimonial, index) => (
                 <div
                   key={`${testimonial.name}-${index}`}
-                  className="testimonial-card bg-gray-50 border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
+                  className="testimonial-card bg-gray-50 border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col"
                 >
-                  <div className="flex items-center gap-3 mb-3">
+                  <p className="text-gray-800 italic leading-relaxed mb-4">
+                    "{testimonial.quote}"
+                  </p>
+
+                  <div className="flex items-center gap-3 mt-auto">
                     <img
                       src={testimonial.avatar}
                       alt={testimonial.name}
+                      loading="lazy"
                       className="w-12 h-12 rounded-full"
                     />
                     <div>
@@ -96,23 +104,6 @@ function Testimonials() {
                       </div>
                       <p className="text-sm text-gray-600">{testimonial.location}</p>
                     </div>
-                  </div>
-
-                  <p className="text-gray-800 italic leading-relaxed">
-                    "{testimonial.quote}"
-                  </p>
-                  <div
-                    className="flex gap-1 mt-3"
-                    aria-label={`${testimonial.rating} out of 5 stars`}
-                  >
-                    {[...Array(5)].map((_, i) => (
-                      <span
-                        key={i}
-                        className={i < testimonial.rating ? "text-yellow-400" : "text-gray-300"}
-                      >
-                        ★
-                      </span>
-                    ))}
                   </div>
                 </div>
               ))}

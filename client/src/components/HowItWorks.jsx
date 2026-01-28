@@ -1,13 +1,15 @@
 import { useState } from "react";
+import useLazyLoad from '../hooks/useLazyLoad';
 
 function HowItWorks() {
+  const { elementRef, isVisible } = useLazyLoad();
   const [mode, setMode] = useState("form");
 
   return (
-    <section id="how-it-works" className="py-16 px-5 bg-white">
+    <section ref={elementRef} id="how-it-works" className="py-16 px-5 bg-white" style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.6s ease-in' }}>
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-10 text-center">
-          How It Works: Your Simple Path to Visa Approval
+          How It Works
         </h2>
 
         <div className="flex justify-center gap-10 mb-10">
