@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
 import chatRoutes from "./routes/chats.js";
 import applicationRoutes from "./routes/applications.js";
+import subscriptionRoutes from "./routes/subscriptions.js";
 import { configurePassport } from "./config/passport.js";
 
 // Load environment variables
@@ -60,6 +61,7 @@ mongoose
 app.use("/auth", authRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/applications", applicationRoutes);
+app.use("/api/subscriptions", subscriptionRoutes);
 
 // Health check route
 app.get("/", (req, res) => {

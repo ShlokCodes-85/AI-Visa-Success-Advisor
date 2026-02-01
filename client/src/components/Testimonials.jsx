@@ -5,57 +5,45 @@ function Testimonials() {
   const testimonials = [
     {
       name: "Aisha Khan",
-      location: "MS Applicant, UK",
+      location: "Beta Tester",
       quote:
-        "My success score jumped 18 points after fixing weak documents the form flagged. It told me exactly what to improve.",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aisha",
-      focus: "Form Mode",
-      rating: 5
+        "Early access gave me the chance to test the form validator before launch. The feedback was incredibly helpful for understanding what a strong application looks like.",
+      focus: "Form Mode"
     },
     {
       name: "David Chen",
-      location: "Undergrad Applicant, Canada",
+      location: "Early Access User",
       quote:
-        "The scorecard predicted my gaps and the checklist kept me on track. No surprises at the visa interview.",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-      focus: "Form Mode",
-      rating: 4
+        "As a beta tester, I really appreciated how the platform helped me identify gaps in my application documents early on.",
+      focus: "Form Mode"
     },
     {
       name: "Emma Rodriguez",
-      location: "PhD Candidate, Australia",
+      location: "Beta Tester",
       quote:
-        "The chatbot coached me on tricky DS-160 questions in minutes. I walked into the interview confident.",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
-      focus: "Chat Mode",
-      rating: 5
+        "Being part of the early access program let me explore the chatbot feature while it was still in development. Valuable experience!",
+      focus: "Chat Mode"
     },
     {
       name: "Samuel Wright",
-      location: "MBA Applicant, USA",
+      location: "Early Access User",
       quote:
-        "Loved how the form explained each metric in the success score. I fixed my financial proof and boosted my readiness.",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Samuel",
-      focus: "Form Mode",
-      rating: 4
+        "I enjoyed testing the success score metrics as a beta user. The interface is intuitive and the explanations are really clear.",
+      focus: "Form Mode"
     },
     {
       name: "Li Na",
-      location: "STEM Grad, Singapore",
+      location: "Beta Tester",
       quote:
-        "I used the chatbot to rehearse interview answers. The follow-up prompts felt like a real officer, super helpful!",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=LiNa",
-      focus: "Chat Mode",
-      rating: 5
+        "The chatbot rehearsal feature worked great during our early access testing. It's a solid tool for interview prep.",
+      focus: "Chat Mode"
     },
     {
       name: "Omar El-Sayed",
-      location: "Masters Applicant, Germany",
+      location: "Early Access User",
       quote:
-        "The success score surfaced a weak home-country ties section. Updated it and my score went from 62 to 84.",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Omar",
-      focus: "Form Mode",
-      rating: 3
+        "Testing the platform as a beta user was a great way to see how it evolves. The support team was responsive to feedback.",
+      focus: "Form Mode"
     }
   ];
 
@@ -63,14 +51,14 @@ function Testimonials() {
   const looped = [...testimonials, ...testimonials];
 
   return (
-    <section ref={elementRef} id="testimonials" className="py-16 px-5 bg-white" style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.6s ease-in' }}>
+    <section ref={elementRef} id="testimonials" className="py-10 pb-12 px-5 bg-white dark:bg-gray-900" style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.6s ease-in' }}>
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-            What Our Successful Students Say
+        <div className="text-center mb-8">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
+            What Our Beta Testers Say
           </h2>
-          <p className="text-gray-600 mt-4 text-lg">
-            Real outcomes from the success score and visa chatbot
+          <p className="text-gray-600 dark:text-gray-400 mt-4 text-lg">
+            Feedback from early access users
           </p>
         </div>
 
@@ -80,30 +68,22 @@ function Testimonials() {
               {looped.map((testimonial, index) => (
                 <div
                   key={`${testimonial.name}-${index}`}
-                  className="testimonial-card bg-gray-50 border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col"
+                  className="testimonial-card bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm hover:shadow-md dark:hover:shadow-blue-900/20 transition-shadow flex flex-col"
                 >
-                  <p className="text-gray-800 italic leading-relaxed mb-4">
+                  <p className="text-gray-800 dark:text-gray-300 italic leading-relaxed mb-4">
                     "{testimonial.quote}"
                   </p>
 
-                  <div className="flex items-center gap-3 mt-auto">
-                    <img
-                      src={testimonial.avatar}
-                      alt={testimonial.name}
-                      loading="lazy"
-                      className="w-12 h-12 rounded-full"
-                    />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-gray-900">
-                          {testimonial.name}
-                        </h3>
-                        <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-200">
-                          {testimonial.focus}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-600">{testimonial.location}</p>
+                  <div className="mt-auto">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                        {testimonial.name}
+                      </h3>
+                      <span className="text-xs px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
+                        {testimonial.focus}
+                      </span>
                     </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.location}</p>
                   </div>
                 </div>
               ))}

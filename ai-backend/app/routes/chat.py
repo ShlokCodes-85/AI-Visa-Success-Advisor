@@ -29,11 +29,18 @@ async def send_message(
                 detail="Message cannot be empty"
             )
         
+        print(f"Route: Received payload with documents: {payload.documents is not None}")
+        if payload.documents:
+            print(f"Route: Number of documents: {len(payload.documents)}")
+            for doc in payload.documents:
+                print(f"Route: Document name: {doc.get('name')}, Content length: {len(doc.get('content', ''))}")
+        
         # Process the message
         response = await chat_service.process_message(
             chat_id=x_chat_id,
             user_id=x_user_id,
             user_message=payload.message,
+            documents=payload.documents,
         )
         
         return ChatResponse(

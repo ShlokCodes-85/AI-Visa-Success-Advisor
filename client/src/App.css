@@ -132,3 +132,19 @@ button {
   background: white;
   border-top: 1px solid #e5e7eb;
 }
+
+.profile-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-circle img {
+    width: 100%;
+    height: auto;
+}

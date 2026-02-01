@@ -34,9 +34,9 @@ function Features() {
   ];
 
   return (
-    <section ref={elementRef} id="features" className="py-12 px-5" style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.6s ease-in' }}>
-      <div className="max-w-6xl mx-auto text-center mb-10">
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
+    <section ref={elementRef} id="features" className="py-8 pb-12 px-5 bg-gray-50 dark:bg-gray-900" style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.6s ease-in' }}>
+      <div className="max-w-6xl mx-auto text-center mb-8">
+        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
           Key Features Designed For Your Success
         </h2>
       </div>

@@ -2,8 +2,8 @@ import { Check } from "lucide-react";
 
 export default function Sidebar({ sections, currentSection, setCurrentSection, completedSections = [] }) {
   return (
-    <div className="w-64 bg-white rounded-xl shadow-sm border border-gray-200 p-4 h-fit sticky top-8">
-      <h2 className="font-bold text-lg text-gray-900 mb-6">Application Progress</h2>
+    <div className="w-64 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 h-fit sticky top-8">
+      <h2 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-6">Application Progress</h2>
 
       <div className="space-y-2">
         {sections.map((section) => (
@@ -14,8 +14,8 @@ export default function Sidebar({ sections, currentSection, setCurrentSection, c
               }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all border focus:outline-none ${
                 currentSection === section.id
-                  ? "bg-blue-50 border-blue-500 text-blue-600 font-medium"
-                  : "bg-white border-black text-black hover:bg-gray-50"
+                  ? "bg-blue-50 dark:bg-blue-900/30 border-blue-500 text-blue-600 dark:text-blue-300 font-medium"
+                  : "bg-white dark:bg-gray-900 border-black dark:border-gray-600 text-black dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800"
               }`}
             >
               {/* Circle with checkmark or outline */}
@@ -25,7 +25,7 @@ export default function Sidebar({ sections, currentSection, setCurrentSection, c
                     ? "bg-blue-600 text-white"
                     : currentSection === section.id
                     ? "border-2 border-dashed border-blue-600"
-                    : "border-2 border-dashed border-black"
+                    : "border-2 border-dashed border-black dark:border-gray-600"
                 }`}
               >
                 {completedSections.includes(section.id) && (

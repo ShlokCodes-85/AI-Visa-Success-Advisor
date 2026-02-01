@@ -32,6 +32,8 @@ const applicationSchema = new mongoose.Schema(
     // Financial Proof
     familyIncome: Number,
     savingsAmount: Number,
+    requiredCurrency: String,
+    requiredFunding: Number,
     sponsorName: String,
     sponsorRelation: String,
 
@@ -45,7 +47,13 @@ const applicationSchema = new mongoose.Schema(
 
     // Interview History
     hasInterviewExperience: Boolean,
-    interviewNotes: String,
+    visaDestinationCountry: String,
+    visaStatus: String,
+
+    applicationYear: Number,
+    rejectionReason: String,
+    deportationOrIssues: String,
+    deportationOrIssuesDetails: String,
 
     // Application Status
     status: {

@@ -40,6 +40,8 @@ class Settings:
 - Financial and sponsor documentation
 - Home country ties and proof of residence
 
-Always provide accurate, helpful, and supportive guidance. If unsure, recommend consulting official resources or immigration lawyers."""
+Always provide accurate, helpful, and supportive guidance.
+If the user asks for a specific length or format (e.g., "2 lines"), comply.
+If unsure, recommend consulting official resources or immigration lawyers."""
 
 settings = Settings()

@@ -16,6 +16,7 @@ class Message(BaseModel):
 class ChatMessage(BaseModel):
     """Chat message request/response"""
     message: str = Field(..., min_length=1, max_length=5000)
+    documents: Optional[List[dict]] = None  # List of {name, content, type}
 
 
 class ChatResponse(BaseModel):
@@ -23,7 +24,7 @@ class ChatResponse(BaseModel):
     success: bool
     response: str
     chat_id: str
-    timestamp: datetime
+    timestamp: Optional[datetime] = None
 
 
 class ChatHistoryResponse(BaseModel):

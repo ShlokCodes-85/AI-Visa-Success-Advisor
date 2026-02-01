@@ -52,7 +52,7 @@ class OpenAIProvider(LLMProvider):
 class GeminiProvider(LLMProvider):
     """Google Gemini provider"""
     
-    def __init__(self, api_key: str, model: str = "gemini-pro"):
+    def __init__(self, api_key: str, model: str = "gemini-1.5-flash"):
         self.api_key = api_key
         self.model = model
         try:
@@ -64,17 +64,42 @@ class GeminiProvider(LLMProvider):
     
     async def generate_response(self, messages: list, temperature: float = 0.7) -> str:
         try:
-            # Convert to Gemini format
-            chat = self.client.start_chat(history=[])
+            # Build conversation context from messages
+            history = []
+            for i, msg in enumerate(messages[:-1]):
+                role = msg.get("role", "user")
+                content = msg.get("content", "")
+                
+                # Skip system messages in history (Gemini doesn't support system role in history)
+                if role == "system":
+                    continue
+                    
+                # Convert to Gemini format
+                gemini_role = "user" if role == "user" else "model"
+                history.append({
+                    "role": gemini_role,
+                    "parts": [content]
+                })
             
-            # Build conversation history
-            for msg in messages[:-1]:
-                role = "user" if msg["role"] == "user" else "model"
-                chat.send_message(msg["content"], stream=False)
+            # Start chat with history
+            chat = self.client.start_chat(history=history)
             
-            # Get response for latest message
-            response = await self.client.generate_content_async(
-                messages[-1]["content"],
+            # Get the latest user message
+            user_message = messages[-1]["content"]
+            
+            # Add system prompt context to the first message if present
+            system_context = ""
+            for msg in messages:
+                if msg.get("role") == "system":
+                    system_context = msg.get("content", "")
+                    break
+            
+            if system_context and not history:
+                user_message = f"{system_context}\n\nUser: {user_message}"
+            
+            # Generate response
+            response = chat.send_message(
+                user_message,
                 generation_config={
                     "temperature": temperature,
                     "max_output_tokens": 1000,

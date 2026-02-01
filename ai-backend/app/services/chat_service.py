@@ -75,6 +75,7 @@ class ChatService:
         chat_id: str,
         user_id: str,
         user_message: str,
+        documents: list = None,
     ) -> str:
         """
         Process a user message and generate an AI response
@@ -83,13 +84,30 @@ class ChatService:
             chat_id: ID of the chat
             user_id: ID of the user
             user_message: The user's message
+            documents: List of document dicts with {name, content, type}
             
         Returns:
             AI-generated response
         """
         try:
+            # Prepare message with document context
+            full_message = user_message
+            if documents:
+                print(f"Processing {len(documents)} document(s)")
+                doc_context = "\n\n[ATTACHED DOCUMENTS]:\n"
+                for doc in documents:
+                    doc_name = doc.get('name', 'unknown')
+                    doc_content = doc.get('content', '')
+                    print(f"Document: {doc_name}, Content length: {len(doc_content)}")
+                    doc_context += f"\n--- Document: {doc_name} ---\n"
+                    doc_context += f"{doc_content[:1000]}\n"  # Limit to first 1000 chars per document
+                full_message = user_message + doc_context
+                print(f"Full message length with documents: {len(full_message)}")
+            else:
+                print("No documents provided")
+            
             # Save user message
-            await self.save_message(chat_id, user_id, "user", user_message)
+            await self.save_message(chat_id, user_id, "user", full_message)
             
             # Get chat history for context
             history = await self.get_chat_history(chat_id, user_id)
@@ -103,7 +121,7 @@ class ChatService:
             
             # Generate response
             response = await llm_service.generate_response(
-                user_message=user_message,
+                user_message=full_message,
                 chat_history=chat_history,
             )
             

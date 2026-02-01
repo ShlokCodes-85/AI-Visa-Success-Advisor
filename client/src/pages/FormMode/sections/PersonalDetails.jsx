@@ -38,8 +38,8 @@ const countries = [
 export default function PersonalDetails({ formData, handleInputChange, errors = {} }) {
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Personal Details</h2>
-      <p className="text-gray-600 mb-8">Please provide your personal details for the student visa application.</p>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Personal Details</h2>
+      <p className="text-gray-600 dark:text-gray-300 mb-8">Please provide your personal details for the student visa application.</p>
 
       <div className="grid grid-cols-2 gap-6">
         <FormField
@@ -52,7 +52,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
         />
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date of Birth</label>
           {errors.dateOfBirth && (
             <p className="text-red-500 text-sm font-medium mb-2">* {errors.dateOfBirth}</p>
           )}
@@ -64,15 +64,15 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
               onChange={handleInputChange}
               max={new Date().toISOString().split('T')[0]}
               className={`w-full px-4 py-3 border ${
-                errors.dateOfBirth ? "border-red-500" : "border-black"
-              } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all cursor-pointer`}
+                errors.dateOfBirth ? "border-red-500" : "border-black dark:border-gray-600"
+              } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all cursor-pointer`}
             />
-            <Calendar className="absolute right-4 top-3.5 w-5 h-5 text-black pointer-events-none" />
+            <Calendar className="absolute right-4 top-3.5 w-5 h-5 text-black dark:text-gray-300 pointer-events-none" />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gender</label>
           {errors.gender && (
             <p className="text-red-500 text-sm font-medium mb-2">* {errors.gender}</p>
           )}
@@ -81,8 +81,8 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             value={formData.gender || ''}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.gender ? "border-red-500" : "border-black"
-            } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+              errors.gender ? "border-red-500" : "border-black dark:border-gray-600"
+            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select your gender</option>
             <option value="Male">Male</option>
@@ -112,7 +112,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
         />
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Nationality</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nationality</label>
           {errors.nationality && (
             <p className="text-red-500 text-sm font-medium mb-2">* {errors.nationality}</p>
           )}
@@ -121,8 +121,8 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             value={formData.nationality}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.nationality ? "border-red-500" : "border-black"
-            } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+              errors.nationality ? "border-red-500" : "border-black dark:border-gray-600"
+            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select your nationality</option>
             {countries.map((country) => (
@@ -133,7 +133,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Country of Residency</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Country of Residency</label>
           {errors.countryOfResidency && (
             <p className="text-red-500 text-sm font-medium mb-2">* {errors.countryOfResidency}</p>
           )}
@@ -142,8 +142,8 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             value={formData.countryOfResidency || ''}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.countryOfResidency ? "border-red-500" : "border-black"
-            } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+              errors.countryOfResidency ? "border-red-500" : "border-black dark:border-gray-600"
+            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select country of residency</option>
             {countries.map((country) => (

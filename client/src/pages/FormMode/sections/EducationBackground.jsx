@@ -13,12 +13,12 @@ export default function EducationBackground({ formData, handleInputChange, error
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Education Background</h2>
-      <p className="text-gray-600 mb-8">Please provide your current educational qualifications.</p>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Education Background</h2>
+      <p className="text-gray-600 dark:text-gray-300 mb-8">Please provide your current educational qualifications.</p>
 
       <div className="grid grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Highest Education Level</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Highest Education Level</label>
           {errors.educationLevel && (
             <p className="text-red-500 text-sm font-medium mb-2">* {errors.educationLevel}</p>
           )}
@@ -27,8 +27,8 @@ export default function EducationBackground({ formData, handleInputChange, error
             value={formData.educationLevel}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.educationLevel ? "border-red-500" : "border-black"
-            } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+              errors.educationLevel ? "border-red-500" : "border-black dark:border-gray-600"
+            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select education level</option>
             <option value="High School">High School</option>
@@ -57,7 +57,7 @@ export default function EducationBackground({ formData, handleInputChange, error
         />
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Graduation Year</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Graduation Year</label>
           {errors.graduationYear && (
             <p className="text-red-500 text-sm font-medium mb-2">* {errors.graduationYear}</p>
           )}
@@ -66,8 +66,8 @@ export default function EducationBackground({ formData, handleInputChange, error
             value={formData.graduationYear}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.graduationYear ? "border-red-500" : "border-black"
-            } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+              errors.graduationYear ? "border-red-500" : "border-black dark:border-gray-600"
+            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select graduation year</option>
             {years.map((year) => (
@@ -79,7 +79,7 @@ export default function EducationBackground({ formData, handleInputChange, error
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">GPA Scale</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">GPA Scale</label>
           {errors.gpaScale && (
             <p className="text-red-500 text-sm font-medium mb-2">* {errors.gpaScale}</p>
           )}
@@ -88,8 +88,8 @@ export default function EducationBackground({ formData, handleInputChange, error
             value={formData.gpaScale || ""}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.gpaScale ? "border-red-500" : "border-black"
-            } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+              errors.gpaScale ? "border-red-500" : "border-black dark:border-gray-600"
+            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select Scale</option>
             {gpaScales.map((scale) => (
@@ -101,7 +101,7 @@ export default function EducationBackground({ formData, handleInputChange, error
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {formData.gpaScale === "100" ? "Percentage / GPA" : "Percentage / GPA"} (Scale: {formData.gpaScale || "Select Scale"})
           </label>
           {errors.gpa && (
@@ -115,8 +115,8 @@ export default function EducationBackground({ formData, handleInputChange, error
             placeholder={`e.g., ${formData.gpaScale === "100" ? "85" : "3.8"}`}
             disabled={!formData.gpaScale}
             className={`w-full px-4 py-3 border ${
-              errors.gpa ? "border-red-500" : "border-black"
-            } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all ${
+              errors.gpa ? "border-red-500" : "border-black dark:border-gray-600"
+            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400 ${
               !formData.gpaScale ? "opacity-50 cursor-not-allowed" : ""
             }`}
             step="0.01"

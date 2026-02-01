@@ -8,11 +8,6 @@ const userSchema = new mongoose.Schema(
         return this.authProvider === "local";
       },
     },
-    username: {
-      type: String,
-      unique: true,
-      sparse: true,
-    },
     email: {
       type: String,
       required: true,
@@ -48,6 +43,10 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
+    },
+    profilePhoto: {
+      type: String,
+      default: null,
     },
   },
   { timestamps: true }

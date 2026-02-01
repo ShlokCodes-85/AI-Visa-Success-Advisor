@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppNavBar from "../../components/AppNavBar";
 import ChatContent from "../ChatMode/ChatContent";
 import ChatSidebar from "../ChatMode/ChatSidebar";
@@ -10,14 +10,19 @@ import FinancialProof from "./sections/FinancialProof";
 import HomeCountryTies from "./sections/HomeCountryTies";
 import StatementOfPurpose from "./sections/StatementOfPurpose";
 import InterviewHistory from "./sections/InterviewHistory";
+import ExamInfo from "./sections/ExamInfo";
+import { useApplicationContext } from "../../contexts/ApplicationContext";
+import { formatFormDataForLLM } from "../../utils/formDataFormatter";
 
 export default function ApplicationForm() {
+  const { setApplicationData } = useApplicationContext();
   const [mode, setMode] = useState("form");
   const [currentSection, setCurrentSection] = useState(1);
   const [completedSections, setCompletedSections] = useState([]);
   const [errors, setErrors] = useState({});
   const [chats, setChats] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
+  const [chatMessages, setChatMessages] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [formData, setFormData] = useState({
@@ -38,6 +43,8 @@ export default function ApplicationForm() {
     startDate: "",
     familyIncome: "",
     savingsAmount: "",
+    requiredCurrency: "",
+    requiredFunding: "",
     sponsorName: "",
     sponsorRelation: "",
     propertyOwnership: "",
@@ -45,8 +52,140 @@ export default function ApplicationForm() {
     employment: "",
     sopText: "",
     hasInterviewExperience: "",
-    interviewNotes: "",
+    visaDestinationCountry: "",
+    visaStatus: "",
+
+    applicationYear: "",
+    rejectionReason: "",
+    deportationOrIssues: "",
+    deportationOrIssuesDetails: "",
+
+    // Exam section
+    examType: "",
+    examScore: "",
   });
+
+  // Update context with formatted application data whenever formData changes
+  useEffect(() => {
+    const formattedData = formatFormDataForLLM(formData);
+    setApplicationData(formattedData);
+  }, [formData, setApplicationData]);
+
+  // Fetch user's chats from backend on component mount
+  useEffect(() => {
+    const fetchChats = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.log("No token found, skipping chat fetch");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:5000/api/chats", {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.chats) {
+            console.log("Loaded", data.chats.length, "chats from backend");
+            // Convert backend format to frontend format
+            const formattedChats = data.chats.map(chat => ({
+              id: chat._id,
+              title: chat.title,
+              createdAt: chat.createdAt,
+              updatedAt: chat.updatedAt,
+            }));
+            setChats(formattedChats);
+          }
+        } else {
+          console.error("Failed to fetch chats:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching chats:", error);
+      }
+    };
+
+    fetchChats();
+  }, []); // Run once on mount
+
+  // Load messages when activeChat changes
+  useEffect(() => {
+    const loadChatMessages = async () => {
+      if (!activeChat) {
+        console.log("No active chat, skipping message load");
+        return;
+      }
+      
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.log("No token, skipping message load");
+        return;
+      }
+
+      // Skip if messages already loaded
+      if (chatMessages[activeChat] && chatMessages[activeChat].length > 0) {
+        console.log("Messages already loaded for chat:", activeChat, "Count:", chatMessages[activeChat].length);
+        return;
+      }
+
+      console.log("Loading messages for chat:", activeChat);
+      try {
+        const response = await fetch(`http://localhost:5000/api/chats/${activeChat}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        console.log("Fetch response status:", response.status);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Fetched chat data:", data);
+          
+          if (data.success && data.chat && data.chat.messages) {
+            console.log("Loaded", data.chat.messages.length, "messages for chat:", activeChat);
+            
+            // Convert backend messages to frontend format
+            const formattedMessages = data.chat.messages.map((msg, index) => ({
+              id: index,
+              type: msg.role === "user" ? "user" : "bot",
+              text: msg.content,
+              timestamp: new Date(msg.timestamp),
+            }));
+            
+            console.log("Formatted messages:", formattedMessages);
+            
+            setChatMessages((prev) => ({
+              ...prev,
+              [activeChat]: formattedMessages,
+            }));
+          } else {
+            console.log("No messages found in chat data");
+          }
+        } else {
+          console.error("Failed to fetch chat messages, status:", response.status);
+        }
+      } catch (error) {
+        console.error("Error loading chat messages:", error);
+      }
+    };
+
+    loadChatMessages();
+  }, [activeChat, chatMessages]);
+
+  useEffect(() => {
+    setChatMessages((prev) => {
+      const next = {};
+      chats.forEach((chat) => {
+        if (prev[chat.id]) {
+          next[chat.id] = prev[chat.id];
+        }
+      });
+      return next;
+    });
+  }, [chats]);
 
   const validateSection = (sectionId) => {
     const newErrors = {};
@@ -54,9 +193,11 @@ export default function ApplicationForm() {
       1: ["fullName", "dateOfBirth", "nationality", "contactEmail", "phoneNumber"],
       2: ["educationLevel", "institution", "fieldOfStudy", "graduationYear", "gpa"],
       3: ["courseType", "universityName", "courseName", "startDate"],
-      4: ["familyIncome", "savingsAmount", "sponsorName", "sponsorRelation"],
-      5: ["propertyOwnership", "familyMembers", "employment"],
-      6: ["sopText"],
+      4: [],
+      5: ["familyIncome", "savingsAmount", "sponsorName", "sponsorRelation"],
+      6: ["propertyOwnership", "familyMembers", "employment"],
+      7: ["sopText"],
+      8: ["hasInterviewExperience"],
       7: ["hasInterviewExperience"],
     };
 
@@ -176,10 +317,11 @@ export default function ApplicationForm() {
     { id: 1, title: "Personal Details" },
     { id: 2, title: "Education Background" },
     { id: 3, title: "Intended Course & University" },
-    { id: 4, title: "Financial Proof" },
-    { id: 5, title: "Home Country Ties" },
-    { id: 6, title: "Statement of Purpose (SOP)" },
-    { id: 7, title: "Interview History" },
+    { id: 4, title: "Exam Information" },
+    { id: 5, title: "Financial Proof" },
+    { id: 6, title: "Home Country Ties" },
+    { id: 7, title: "Statement of Purpose (SOP)" },
+    { id: 8, title: "Interview History" },
   ];
 
   const validateField = (fieldName, fieldValue) => {
@@ -284,12 +426,14 @@ export default function ApplicationForm() {
       case 3:
         return <IntendedCourse formData={formData} handleInputChange={handleInputChange} errors={errors} />;
       case 4:
-        return <FinancialProof formData={formData} handleInputChange={handleInputChange} errors={errors} />;
+        return <ExamInfo formData={formData} setFormData={setFormData} errors={errors} />;
       case 5:
-        return <HomeCountryTies formData={formData} handleInputChange={handleInputChange} errors={errors} />;
+        return <FinancialProof formData={formData} handleInputChange={handleInputChange} errors={errors} />;
       case 6:
-        return <StatementOfPurpose formData={formData} handleInputChange={handleInputChange} errors={errors} />;
+        return <HomeCountryTies formData={formData} handleInputChange={handleInputChange} errors={errors} />;
       case 7:
+        return <StatementOfPurpose formData={formData} handleInputChange={handleInputChange} errors={errors} />;
+      case 8:
         return <InterviewHistory formData={formData} handleInputChange={handleInputChange} errors={errors} />;
       default:
         return null;
@@ -297,7 +441,7 @@ export default function ApplicationForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Common NavBar */}
       <AppNavBar mode={mode} setMode={setMode} />
 
@@ -320,6 +464,8 @@ export default function ApplicationForm() {
             <ChatContent 
               activeChat={activeChat}
               chats={chats}
+              messagesByChat={chatMessages}
+              setMessagesByChat={setChatMessages}
             />
           </div>
         </div>
@@ -332,14 +478,14 @@ export default function ApplicationForm() {
             completedSections={completedSections}
           />
 
-          <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+          <div className="flex-1 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
             {renderSection()}
 
-            <div className="mt-8 flex justify-between pt-8 border-t border-gray-200">
+            <div className="mt-8 flex justify-between pt-8 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={() => setCurrentSection(Math.max(1, currentSection - 1))}
                 disabled={currentSection === 1}
-                className="px-6 py-2 rounded-lg border border-black bg-white text-black font-medium hover:bg-gray-50 disabled:opacity-50"
+                className="px-6 py-2 rounded-lg border border-black dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-gray-100 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
               >
                 Previous
               </button>
@@ -349,12 +495,12 @@ export default function ApplicationForm() {
                   if (validateSection(currentSection)) {
                     setErrors({});
                     markSectionComplete(currentSection);
-                    if (currentSection < 7) setCurrentSection(currentSection + 1);
+                    if (currentSection < 8) setCurrentSection(currentSection + 1);
                   }
                 }}
                 className="px-8 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
               >
-                {currentSection === 7 ? "Submit Form" : "Save and Continue"}
+                {currentSection === 8 ? "Submit Form" : "Save and Continue"}
               </button>
             </div>
           </div>

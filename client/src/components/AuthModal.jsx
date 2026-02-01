@@ -13,12 +13,12 @@ export default function AuthModal({ onClose }) {
   const [mode, setMode] = useState("login");
   const [formData, setFormData] = useState({
     fullName: "",
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const passwordValidation = {
     hasUppercase: /[A-Z]/.test(formData.password),
@@ -29,18 +29,19 @@ export default function AuthModal({ onClose }) {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (formError) setFormError("");
   };
 
   const handleModeSwitch = () => {
     setMode(mode === "login" ? "signup" : "login");
     setFormData({
       fullName: "",
-      username: "",
       email: "",
       password: "",
       confirmPassword: "",
     });
     setPasswordFocused(false);
+    if (formError) setFormError("");
   };
 
   const handleOAuth = (provider) => {
@@ -60,7 +61,7 @@ export default function AuthModal({ onClose }) {
 
     const body = mode === "login" 
       ? { email: formData.email, password: formData.password }
-      : { fullName: formData.fullName, username: formData.username, email: formData.email, password: formData.password };
+      : { fullName: formData.fullName, email: formData.email, password: formData.password };
 
     const res = await fetch(`${BACKEND_URL}${endpoint}`, {
       method: "POST",
@@ -77,24 +78,33 @@ export default function AuthModal({ onClose }) {
       // Navigate to application form
       navigate("/application");
     } else {
-      alert(data.message || "Authentication failed");
+      // Map backend messages to clear, user-facing inline errors
+      const msg = data && data.message ? data.message : "Authentication failed";
+      const lower = msg.toLowerCase();
+      if (lower.includes("not register")) {
+        setFormError("User not registered. Please SignUp to continue.");
+      } else if (lower.includes("invalid") || lower.includes("incorrect") || lower.includes("wrong")) {
+        setFormError("Invalid Email or Password");
+      } else {
+        setFormError(msg);
+      }
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className={`w-full ${mode === "signup" ? "max-w-[450px]" : "max-w-[400px]"} bg-white rounded-2xl p-6 shadow-2xl relative transform transition-all`}>
+      <div className={`w-full ${mode === "signup" ? "max-w-[450px]" : "max-w-[400px]"} bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-2xl dark:shadow-gray-900/50 relative transform transition-all`}>
         <button
           onClick={onClose}
-          className="absolute right-2 top-2 p-1 bg-white border border-transparent rounded hover:border-black transition-all"
+          className="absolute right-2 top-2 p-1 bg-white dark:bg-gray-700 border border-transparent rounded hover:border-black dark:hover:border-gray-400 transition-all"
         >
-          <IoClose className="text-lg text-black" />
+          <IoClose className="text-lg text-black dark:text-gray-100" />
         </button>
 
-        <h2 className="text-2xl font-bold text-center mb-2">
+        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
           {mode === "login" ? "Welcome Back!" : "Create Account"}
         </h2>
-        <p className="text-gray-500 text-center mb-5">
+        <p className="text-gray-500 dark:text-gray-400 text-center mb-5">
           {mode === "login" ? "Sign in to continue your visa journey" : "Start your visa success journey today"}
         </p>
 
@@ -103,25 +113,13 @@ export default function AuthModal({ onClose }) {
           {mode === "signup" && (
             <>
               <div className="flex items-center gap-3">
-                <label className="text-sm font-medium text-gray-700 w-28 shrink-0">Full Name</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 w-28 shrink-0">Full Name</label>
                 <input
                   type="text"
                   name="fullName"
                   value={formData.fullName}
                   placeholder="Enter your full name"
-                  className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm"
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="flex items-center gap-3">
-                <label className="text-sm font-medium text-gray-700 w-28 shrink-0">Username</label>
-                <input
-                  type="text"
-                  name="username"
-                  value={formData.username}
-                  placeholder="Enter your username"
-                  className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm"
+                  className="flex-1 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400"
                   onChange={handleChange}
                   required
                 />
@@ -130,27 +128,27 @@ export default function AuthModal({ onClose }) {
           )}
 
           <div className="flex items-center gap-3">
-            <label className="text-sm font-medium text-gray-700 w-28 shrink-0">Email ID</label>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 w-28 shrink-0">Email ID</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               placeholder="Enter your email"
-              className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm"
+              className="flex-1 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400"
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="flex items-center gap-3">
-            <label className="text-sm font-medium text-gray-700 w-28 shrink-0">Password</label>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 w-28 shrink-0">Password</label>
             <div className="flex-1">
               <input
                 type="password"
                 name="password"
                 value={formData.password}
                 placeholder="Enter your password"
-                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm"
+                className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400"
                 onChange={handleChange}
                 onFocus={() => setPasswordFocused(true)}
                 onBlur={() => setPasswordFocused(false)}
@@ -179,19 +177,21 @@ export default function AuthModal({ onClose }) {
             </div>
           </div>
 
+          {/* formError is shown below the Sign In / Create Account button */}
+
           {mode === "signup" && (
             <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-gray-700 w-28 shrink-0">Confirm Password</label>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 w-28 shrink-0">Confirm Password</label>
               <div className="flex-1">
                 <input
                   type="password"
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   placeholder="Confirm your password"
-                  className={`w-full px-3 py-2 bg-white border rounded-lg text-black focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm ${
+                  className={`w-full px-3 py-2 bg-white dark:bg-gray-700 border rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400 ${
                     formData.confirmPassword && formData.password !== formData.confirmPassword
                       ? "border-red-500"
-                      : "border-gray-300"
+                      : "border-gray-300 dark:border-gray-600"
                   }`}
                   onChange={handleChange}
                   required
@@ -209,6 +209,12 @@ export default function AuthModal({ onClose }) {
           <button className="w-full py-2.5 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
             {mode === "login" ? "Sign In" : "Create Account"}
           </button>
+
+          {formError && (
+            <div className="text-red-500 text-sm font-medium mt-3 text-center">
+              {formError}
+            </div>
+          )}
         </form>
 
         {/* OAuth Buttons - Only show for login */}
@@ -218,14 +224,14 @@ export default function AuthModal({ onClose }) {
             <div className="flex flex-col gap-2">
               <button
                 onClick={() => handleOAuth("google")}
-                className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-white border border-gray-400 rounded-xl hover:bg-gray-50 transition-all duration-200 hover:shadow-md"
+                className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:shadow-md"
               >
                 <FcGoogle className="text-lg" />
-                <span className="text-black font-medium text-sm">Continue with Google</span>
+                <span className="text-black dark:text-white font-medium text-sm">Continue with Google</span>
               </button>
               <button
                 onClick={() => handleOAuth("github")}
-                className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-200 hover:shadow-md"
+                className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 transition-all duration-200 hover:shadow-md"
               >
                 <FaGithub className="text-lg" />
                 <span className="font-medium text-sm">Continue with GitHub</span>
@@ -238,7 +244,7 @@ export default function AuthModal({ onClose }) {
         <p className="text-center text-sm mt-5 text-gray-600">
           {mode === "login" ? "Don't have an account? " : "Already have an account? "}
           <span
-            className="text-blue-600 font-semibold cursor-pointer hover:underline"
+            className="text-blue-400 font-semibold cursor-pointer hover:underline"
             onClick={handleModeSwitch}
           >
             {mode === "login" ? "Sign Up" : "Sign In"}
@@ -265,9 +271,9 @@ function PasswordRequirement({ met, text }) {
 function Divider() {
   return (
     <div className="flex items-center my-6">
-      <div className="flex-1 h-px bg-gray-200" />
-      <span className="px-4 text-sm text-gray-400">or</span>
-      <div className="flex-1 h-px bg-gray-200" />
+      <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+      <span className="px-4 text-sm text-gray-400 dark:text-gray-500">or</span>
+      <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
     </div>
   );
 }

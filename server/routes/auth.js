@@ -226,4 +226,67 @@ router.get("/me", async (req, res) => {
   }
 });
 
+// Update profile photo (protected route)
+router.put("/profile-photo", async (req, res) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "Access token required" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { profilePhoto } = req.body;
+
+    if (!profilePhoto) {
+      return res.status(400).json({ message: "Profile photo is required" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      decoded.id,
+      { profilePhoto },
+      { new: true }
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "Profile photo updated successfully", user });
+  } catch (error) {
+    console.error("Profile photo update error:", error);
+    res.status(500).json({ message: "Failed to update profile photo" });
+  }
+});
+
+// Remove profile photo (protected route)
+router.delete("/profile-photo", async (req, res) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "Access token required" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findByIdAndUpdate(
+      decoded.id,
+      { profilePhoto: null },
+      { new: true }
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "Profile photo removed successfully", user });
+  } catch (error) {
+    console.error("Profile photo delete error:", error);
+    res.status(500).json({ message: "Failed to remove profile photo" });
+  }
+});
+
 export default router;

@@ -14,7 +14,7 @@ export default function FormField({
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
         {label}
       </label>
       {error && (
@@ -30,8 +30,8 @@ export default function FormField({
           onChange={onChange}
           placeholder={placeholder}
           className={`w-full px-4 py-3 border ${
-            error ? "border-red-500" : "border-black"
-          } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all ${className}`}
+            error ? "border-red-500" : "border-black dark:border-gray-600"
+          } bg-white dark:bg-gray-700 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400 ${className}`}
         />
       )}
     </div>

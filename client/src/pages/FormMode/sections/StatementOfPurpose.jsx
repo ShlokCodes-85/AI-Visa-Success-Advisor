@@ -79,13 +79,13 @@ export default function StatementOfPurpose({ formData, handleInputChange, errors
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Statement of Purpose (SOP)</h2>
-      <p className="text-gray-600 mb-8">Write a compelling statement about why you want to study abroad and your future goals.</p>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Statement of Purpose (SOP)</h2>
+      <p className="text-gray-600 dark:text-gray-300 mb-8">Write a compelling statement about why you want to study abroad and your future goals.</p>
 
       <div>
         {/* Label with Upload Button */}
         <div className="flex items-center justify-between mb-3">
-          <label className="block text-sm font-medium text-gray-700">Your Statement of Purpose</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Your Statement of Purpose</label>
           
           <label 
             htmlFor="sopFileUpload" 
@@ -104,12 +104,12 @@ export default function StatementOfPurpose({ formData, handleInputChange, errors
         </div>
 
         {/* File type info */}
-        <p className="text-xs text-gray-500 text-right mb-2">TXT, DOC, or DOCX (Max 5MB)</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 text-right mb-2">TXT, DOC, or DOCX (Max 5MB)</p>
 
         {/* Upload Status */}
         {uploadStatus && (
           <p className={`text-sm mb-2 ${
-            uploadStatus.includes('✓') ? 'text-green-600' : uploadStatus.includes('Error') || uploadStatus.includes('No text') ? 'text-red-500' : 'text-gray-600'
+            uploadStatus.includes('✓') ? 'text-green-600' : uploadStatus.includes('Error') || uploadStatus.includes('No text') ? 'text-red-500' : 'text-gray-600 dark:text-gray-300'
           }`}>
             {uploadStatus}
           </p>
@@ -126,10 +126,10 @@ export default function StatementOfPurpose({ formData, handleInputChange, errors
           placeholder="Write your statement of purpose here..."
           rows={12}
           className={`w-full px-4 py-3 border ${
-            errors.sopText ? "border-red-500" : "border-black"
-          } bg-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none`}
+            errors.sopText ? "border-red-500" : "border-black dark:border-gray-600"
+          } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none placeholder-gray-500 dark:placeholder-gray-400`}
         />
-        <p className="text-sm text-gray-500 mt-2">Minimum 250 words recommended</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Minimum 250 words recommended</p>
       </div>
     </div>
   );
