@@ -21,7 +21,8 @@ export default function ChatSidebar({
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/chats", {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.vercel.app";
+      const response = await fetch(`${BACKEND_URL}/api/chats`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +68,8 @@ export default function ChatSidebar({
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/chats/${pendingDeleteChat.id}`, {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.vercel.app";
+      const response = await fetch(`${BACKEND_URL}/api/chats/${pendingDeleteChat.id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -112,7 +114,8 @@ export default function ChatSidebar({
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/chats/${chatId}`, {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.vercel.app";
+      const response = await fetch(`${BACKEND_URL}/api/chats/${chatId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

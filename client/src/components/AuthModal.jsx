@@ -6,7 +6,7 @@ import { MdClose } from "react-icons/md";
 import { FaCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const BACKEND_URL = "http://localhost:5000"; // change in prod
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.vercel.app";
 
 export default function AuthModal({ onClose }) {
   const navigate = useNavigate();

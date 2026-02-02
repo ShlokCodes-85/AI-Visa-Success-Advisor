@@ -32,7 +32,8 @@ export default function ChatContent({
     if (!token || !activeChat) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/chats/${activeChat}/messages`, {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.vercel.app";
+      const response = await fetch(`${BACKEND_URL}/api/chats/${activeChat}/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -151,7 +152,9 @@ export default function ChatContent({
         hasApplicationData: !!applicationData,
       });
       
-      const response = await fetch("http://localhost:8000/api/chat/message", {
+      // TODO: Update with Python backend URL when deployed
+      const PYTHON_BACKEND_URL = import.meta.env.VITE_PYTHON_BACKEND_URL || "http://localhost:8000";
+      const response = await fetch(`${PYTHON_BACKEND_URL}/api/chat/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

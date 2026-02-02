@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import useLazyLoad from '../hooks/useLazyLoad';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://ai-visa-success-advisor.vercel.app';
 
 function Footer() {
   const { elementRef, isVisible } = useLazyLoad();

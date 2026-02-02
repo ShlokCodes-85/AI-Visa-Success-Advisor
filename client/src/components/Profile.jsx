@@ -34,7 +34,8 @@ export default function Profile({ user, onClose, onPhotoChange }) {
         // Save to backend
         try {
           const token = localStorage.getItem("token");
-          const response = await fetch("http://localhost:5000/auth/profile-photo", {
+          const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.vercel.app";
+          const response = await fetch(`${BACKEND_URL}/auth/profile-photo`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -73,7 +74,8 @@ export default function Profile({ user, onClose, onPhotoChange }) {
     // Remove from backend
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/auth/profile-photo", {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.vercel.app";
+      const response = await fetch(`${BACKEND_URL}/auth/profile-photo`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,
