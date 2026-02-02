@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.settings import settings
 from app.routes.chat import router as chat_router
+from app.routes.form import router as form_router
 
 # Create FastAPI app
 app = FastAPI(
@@ -24,6 +25,7 @@ app.add_middleware(
 
 # Include routes
 app.include_router(chat_router)
+app.include_router(form_router)
 
 
 @app.get("/")

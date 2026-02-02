@@ -15,10 +15,15 @@ class Settings:
     MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
     DATABASE_NAME = os.getenv("DATABASE_NAME", "visa-advisor")
     
-    # LLM Configuration (to be set later)
+    # LLM Configuration for Chat Mode
     LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai")  # openai, gemini, anthropic, local
     LLM_API_KEY = os.getenv("LLM_API_KEY", "")
     LLM_MODEL = os.getenv("LLM_MODEL", "gpt-3.5-turbo")
+    
+    # LLM Configuration for Form Mode (can be different from chat mode)
+    FORM_LLM_PROVIDER = os.getenv("FORM_LLM_PROVIDER", "openai")  # Change this to use different LLM for form mode
+    FORM_LLM_API_KEY = os.getenv("FORM_LLM_API_KEY", "")
+    FORM_LLM_MODEL = os.getenv("FORM_LLM_MODEL", "gpt-3.5-turbo")
     
     # Node.js Backend
     NODE_BACKEND_URL = os.getenv("NODE_BACKEND_URL", "http://localhost:5000")
