@@ -64,6 +64,11 @@ h1 {
     "Segoe UI", sans-serif;
 }
 
+.navbar-brand-font {
+  font-family: "IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 500;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
