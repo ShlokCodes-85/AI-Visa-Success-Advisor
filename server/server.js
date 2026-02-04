@@ -58,7 +58,7 @@ mongoose
   });
 
 // Routes
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
