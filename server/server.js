@@ -82,8 +82,13 @@ app.get("/", (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: "Something went wrong!" });
+  console.error("Error:", err);
+  console.error("Error stack:", err.stack);
+  console.error("Request URL:", req.url);
+  res.status(500).json({ 
+    message: "Something went wrong!",
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
 // Start server

@@ -6,15 +6,19 @@ import User from "../models/User.js";
 export const configurePassport = () => {
   // Serialize user for the session
   passport.serializeUser((user, done) => {
-    done(null, user.id);
+    console.log("Serializing user:", user._id);
+    done(null, user._id);
   });
 
   // Deserialize user from the session
   passport.deserializeUser(async (id, done) => {
     try {
+      console.log("Deserializing user:", id);
       const user = await User.findById(id);
+      console.log("User found:", user ? "yes" : "no");
       done(null, user);
     } catch (error) {
+      console.error("Deserialization error:", error);
       done(error, null);
     }
   });

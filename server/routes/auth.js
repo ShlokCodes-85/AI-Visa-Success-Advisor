@@ -165,15 +165,20 @@ router.get(
     session: true 
   }),
   (req, res) => {
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: req.user._id, email: req.user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    try {
+      // Generate JWT token
+      const token = jwt.sign(
+        { id: req.user._id, email: req.user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
 
-    // Redirect to frontend with token
-    res.redirect(`${process.env.CLIENT_URL}/oauth/success?token=${token}`);
+      // Redirect to frontend with token
+      res.redirect(`${process.env.CLIENT_URL}/oauth/success?token=${token}`);
+    } catch (error) {
+      console.error("Google OAuth callback error:", error);
+      res.redirect(`${process.env.CLIENT_URL}/?error=token_generation_failed`);
+    }
   }
 );
 
@@ -190,15 +195,20 @@ router.get(
     session: true 
   }),
   (req, res) => {
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: req.user._id, email: req.user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    try {
+      // Generate JWT token
+      const token = jwt.sign(
+        { id: req.user._id, email: req.user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
 
-    // Redirect to frontend with token
-    res.redirect(`${process.env.CLIENT_URL}/oauth/success?token=${token}`);
+      // Redirect to frontend with token
+      res.redirect(`${process.env.CLIENT_URL}/oauth/success?token=${token}`);
+    } catch (error) {
+      console.error("GitHub OAuth callback error:", error);
+      res.redirect(`${process.env.CLIENT_URL}/?error=token_generation_failed`);
+    }
   }
 );
 
