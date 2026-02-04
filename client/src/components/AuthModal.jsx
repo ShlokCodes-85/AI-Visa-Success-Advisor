@@ -45,7 +45,7 @@ export default function AuthModal({ onClose }) {
   };
 
   const handleOAuth = (provider) => {
-    window.location.href = `${BACKEND_URL}/auth/${provider}`;
+    window.location.href = `${BACKEND_URL}/api/auth/${provider}`;
   };
 
   const handleSubmit = async (e) => {
@@ -57,7 +57,7 @@ export default function AuthModal({ onClose }) {
     }
 
     const endpoint =
-      mode === "login" ? "/auth/login" : "/auth/register";
+      mode === "login" ? "/api/auth/login" : "/api/auth/register";
 
     const body = mode === "login" 
       ? { email: formData.email, password: formData.password }

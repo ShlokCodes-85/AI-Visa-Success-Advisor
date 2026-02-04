@@ -26,7 +26,7 @@ export default function AppNavBar({ mode, setMode }) {
 
       try {
         const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.vercel.app";
-        const response = await fetch(`${BACKEND_URL}/auth/me`, {
+        const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
