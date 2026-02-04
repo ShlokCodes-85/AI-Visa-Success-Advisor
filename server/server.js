@@ -46,16 +46,28 @@ configurePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Database connection
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => {
+// Database connection (optimized for serverless)
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) {
+    return;
+  }
+  
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
+    });
+    isConnected = true;
     console.log("✅ Connected to MongoDB");
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error("❌ MongoDB connection error:", error);
-    process.exit(1);
-  });
+    throw error;
+  }
+};
+
+// Connect to DB
+connectDB();
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -75,6 +87,11 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  });
+}
+
+// Export for Vercel serverless
+export default app;
