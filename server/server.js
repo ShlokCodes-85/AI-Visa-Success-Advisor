@@ -55,11 +55,11 @@ configurePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Database connection with local MongoDB as default
+// Database connection with graceful fallback
 let isConnected = false;
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/visa-advisor";
-const MAX_RETRIES = 5;
+const MAX_RETRIES = 3;
 const INITIAL_RETRY_DELAY = 1000; // 1 second
 
 const connectDB = async () => {
@@ -89,9 +89,12 @@ const connectDB = async () => {
         setTimeout(attemptConnect, delay);
       } else {
         console.error("❌ MongoDB connection failed after", MAX_RETRIES, "attempts");
-        console.error("MongoDB URI:", MONGODB_URI);
-        console.error("Full error:", error);
-        throw error;
+        console.error("⚠️  Server will run without database. Some features will be unavailable.");
+        console.error("MongoDB URI used:", MONGODB_URI);
+        console.error("Error:", error.message);
+        console.error("\n📖 For Render deployment, set MONGODB_URI to a cloud MongoDB (e.g., MongoDB Atlas)");
+        console.error("   Do NOT use localhost - it won't work in cloud environments.");
+        // Don't throw - allow server to start without DB
       }
     }
   };
@@ -99,8 +102,10 @@ const connectDB = async () => {
   await attemptConnect();
 };
 
-// Connect to DB
-connectDB();
+// Connect to DB (non-blocking)
+connectDB().catch((err) => {
+  console.warn("DB connection initialization error (non-fatal):", err.message);
+});
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -110,7 +115,21 @@ app.use("/api/subscriptions", subscriptionRoutes);
 
 // Health check route
 app.get("/", (req, res) => {
-  res.json({ message: "Visa Auth API is running" });
+  res.json({ 
+    message: "Visa Auth API is running",
+    mongodb: isConnected ? "connected" : "disconnected",
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Database status endpoint
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    mongodb: isConnected ? "connected" : "disconnected",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Error handling middleware
