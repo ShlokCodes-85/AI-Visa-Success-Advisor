@@ -55,24 +55,48 @@ configurePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Database connection (optimized for serverless)
+// Database connection with local MongoDB as default
 let isConnected = false;
+
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/visa-advisor";
+const MAX_RETRIES = 5;
+const INITIAL_RETRY_DELAY = 1000; // 1 second
 
 const connectDB = async () => {
   if (isConnected) {
     return;
   }
   
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000,
-    });
-    isConnected = true;
-    console.log("✅ Connected to MongoDB");
-  } catch (error) {
-    console.error("❌ MongoDB connection error:", error);
-    throw error;
-  }
+  let retries = 0;
+  const attemptConnect = async () => {
+    try {
+      console.log(`🔄 Attempting to connect to MongoDB (attempt ${retries + 1}/${MAX_RETRIES})...`);
+      await mongoose.connect(MONGODB_URI, {
+        serverSelectionTimeoutMS: 5000,
+        connectTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
+        retryWrites: true,
+        w: "majority",
+      });
+      isConnected = true;
+      console.log("✅ Connected to MongoDB");
+    } catch (error) {
+      retries++;
+      if (retries < MAX_RETRIES) {
+        const delay = INITIAL_RETRY_DELAY * Math.pow(2, retries - 1); // exponential backoff
+        console.warn(`⚠️  Connection attempt ${retries} failed. Retrying in ${delay}ms...`);
+        console.error("Error details:", error.message);
+        setTimeout(attemptConnect, delay);
+      } else {
+        console.error("❌ MongoDB connection failed after", MAX_RETRIES, "attempts");
+        console.error("MongoDB URI:", MONGODB_URI);
+        console.error("Full error:", error);
+        throw error;
+      }
+    }
+  };
+  
+  await attemptConnect();
 };
 
 // Connect to DB
