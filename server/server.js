@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import passport from "passport";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
@@ -28,12 +29,20 @@ app.use(
   })
 );
 
-// Session configuration
+// Session configuration using MongoDB-backed store
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+      ttl: 14 * 24 * 60 * 60, // 14 days
+      mongoOptions: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      },
+    }),
     cookie: {
       secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
@@ -91,12 +100,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server is running on http://localhost:${PORT}`);
-  });
-}
-
-// Export for Vercel serverless
-export default app;
+// Start server (suitable for Render / standard Node hosting)
+app.listen(PORT, () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
+});
