@@ -34,7 +34,7 @@ export default function Profile({ user, onClose, onPhotoChange }) {
         // Save to backend
         try {
           const token = localStorage.getItem("token");
-          const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.vercel.app";
+          const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
           const response = await fetch(`${BACKEND_URL}/api/auth/profile-photo`, {
             method: "PUT",
             headers: {
@@ -74,7 +74,7 @@ export default function Profile({ user, onClose, onPhotoChange }) {
     // Remove from backend
     try {
       const token = localStorage.getItem("token");
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.vercel.app";
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
       const response = await fetch(`${BACKEND_URL}/api/auth/profile-photo`, {
         method: "DELETE",
         headers: {

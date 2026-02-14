@@ -32,7 +32,7 @@ export default function ChatContent({
     if (!token || !activeChat) return;
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.vercel.app";
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
       const response = await fetch(`${BACKEND_URL}/api/chats/${activeChat}/messages`, {
         method: "POST",
         headers: {
