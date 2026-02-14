@@ -81,8 +81,7 @@ export default function ApplicationForm() {
       }
 
       try {
-        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
-        const response = await fetch(`${BACKEND_URL}/api/chats`, {
+        const response = await fetch(`https://ai-visa-success-advisor.onrender.com/api/chats`, {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
@@ -134,8 +133,7 @@ export default function ApplicationForm() {
 
       console.log("Loading messages for chat:", activeChat);
       try {
-        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
-        const response = await fetch(`${BACKEND_URL}/api/chats/${activeChat}`, {
+        const response = await fetch(`https://ai-visa-success-advisor.onrender.com/api/chats/${activeChat}`, {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
@@ -175,19 +173,7 @@ export default function ApplicationForm() {
     };
 
     loadChatMessages();
-  }, [activeChat, chatMessages]);
-
-  useEffect(() => {
-    setChatMessages((prev) => {
-      const next = {};
-      chats.forEach((chat) => {
-        if (prev[chat.id]) {
-          next[chat.id] = prev[chat.id];
-        }
-      });
-      return next;
-    });
-  }, [chats]);
+  }, [activeChat]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const validateSection = (sectionId) => {
     const newErrors = {};
@@ -200,7 +186,6 @@ export default function ApplicationForm() {
       6: ["propertyOwnership", "familyMembers", "employment"],
       7: ["sopText"],
       8: ["hasInterviewExperience"],
-      7: ["hasInterviewExperience"],
     };
 
     const fieldLabels = {
@@ -295,12 +280,6 @@ export default function ApplicationForm() {
             newErrors[field] = "Please enter a valid year";
             isValid = false;
           }
-        } else if (field === "gpa") {
-          const gpa = parseFloat(value);
-          if (gpa < 0 || gpa > 4.0) {
-            newErrors[field] = "GPA should be between 0 and 4.0";
-            isValid = false;
-          }
         }
       }
     });
@@ -327,34 +306,6 @@ export default function ApplicationForm() {
   ];
 
   const validateField = (fieldName, fieldValue) => {
-    const fieldLabels = {
-      fullName: "Full Name",
-      dateOfBirth: "Date of Birth",
-      nationality: "Nationality",
-      contactEmail: "Email",
-      phoneNumber: "Phone Number",
-      educationLevel: "Education Level",
-      institution: "Institution",
-      fieldOfStudy: "Field of Study",
-      graduationYear: "Graduation Year",
-      gpaScale: "GPA Scale",
-      gpa: "GPA",
-      courseType: "Course Type",
-      universityName: "University Name",
-      courseName: "Course Name",
-      startDate: "Start Date",
-      familyIncome: "Family Income",
-      savingsAmount: "Savings Amount",
-      sponsorName: "Sponsor Name",
-      sponsorRelation: "Sponsor Relation",
-      propertyOwnership: "Property Ownership",
-      familyMembers: "Family Members",
-      employment: "Employment",
-      sopText: "Statement of Purpose",
-      hasInterviewExperience: "Interview Experience",
-      interviewNotes: "Interview Notes",
-    };
-
     let error = null;
 
     // Check if field is empty

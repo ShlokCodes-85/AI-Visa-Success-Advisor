@@ -21,8 +21,7 @@ export default function ChatSidebar({
     }
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
-      const response = await fetch(`${BACKEND_URL}/api/chats`, {
+      const response = await fetch(`https://ai-visa-success-advisor.onrender.com/api/chats`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,8 +67,7 @@ export default function ChatSidebar({
     }
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
-      const response = await fetch(`${BACKEND_URL}/api/chats/${pendingDeleteChat.id}`, {
+      const response = await fetch(`https://ai-visa-success-advisor.onrender.com/api/chats/${pendingDeleteChat.id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -114,8 +112,7 @@ export default function ChatSidebar({
     }
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
-      const response = await fetch(`${BACKEND_URL}/api/chats/${chatId}`, {
+      const response = await fetch(`https://ai-visa-success-advisor.onrender.com/api/chats/${chatId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

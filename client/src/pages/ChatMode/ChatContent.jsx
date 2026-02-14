@@ -32,8 +32,7 @@ export default function ChatContent({
     if (!token || !activeChat) return;
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
-      const response = await fetch(`${BACKEND_URL}/api/chats/${activeChat}/messages`, {
+      const response = await fetch(`https://ai-visa-success-advisor.onrender.com/api/chats/${activeChat}/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -153,8 +152,7 @@ export default function ChatContent({
       });
       
       // TODO: Update with Python backend URL when deployed
-      const PYTHON_BACKEND_URL = import.meta.env.VITE_PYTHON_BACKEND_URL || "http://localhost:8000";
-      const response = await fetch(`${PYTHON_BACKEND_URL}/api/chat/message`, {
+      const response = await fetch(`http://localhost:8000/api/chat/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -283,21 +281,21 @@ export default function ChatContent({
                     <div className="text-sm prose prose-sm max-w-none dark:prose-invert">
                       <ReactMarkdown
                         components={{
-                          p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
-                          ul: ({node, ...props}) => <ul className="list-disc list-inside mb-2" {...props} />,
-                          ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-2" {...props} />,
-                          li: ({node, ...props}) => <li className="mb-1" {...props} />,
-                          strong: ({node, ...props}) => <strong className="font-bold" {...props} />,
-                          em: ({node, ...props}) => <em className="italic" {...props} />,
-                          h1: ({node, ...props}) => <h1 className="text-lg font-bold mb-2" {...props} />,
-                          h2: ({node, ...props}) => <h2 className="text-base font-bold mb-2" {...props} />,
-                          h3: ({node, ...props}) => <h3 className="text-sm font-bold mb-2" {...props} />,
-                          blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-gray-400 dark:border-gray-600 pl-2 italic mb-2" {...props} />,
-                          code: ({node, ...props}) => <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded text-xs" {...props} />,
-                          table: ({node, ...props}) => <table className="border-collapse border border-gray-400 dark:border-gray-600 text-xs mb-2" {...props} />,
-                          tr: ({node, ...props}) => <tr className="border border-gray-400 dark:border-gray-600" {...props} />,
-                          td: ({node, ...props}) => <td className="border border-gray-400 dark:border-gray-600 px-2 py-1" {...props} />,
-                          th: ({node, ...props}) => <th className="border border-gray-400 dark:border-gray-600 px-2 py-1 bg-gray-200 dark:bg-gray-700 font-bold" {...props} />,
+                          p: (props) => <p className="mb-2 last:mb-0" {...props} />,
+                          ul: (props) => <ul className="list-disc list-inside mb-2" {...props} />,
+                          ol: (props) => <ol className="list-decimal list-inside mb-2" {...props} />,
+                          li: (props) => <li className="mb-1" {...props} />,
+                          strong: (props) => <strong className="font-bold" {...props} />,
+                          em: (props) => <em className="italic" {...props} />,
+                          h1: (props) => <h1 className="text-lg font-bold mb-2" {...props} />,
+                          h2: (props) => <h2 className="text-base font-bold mb-2" {...props} />,
+                          h3: (props) => <h3 className="text-sm font-bold mb-2" {...props} />,
+                          blockquote: (props) => <blockquote className="border-l-4 border-gray-400 dark:border-gray-600 pl-2 italic mb-2" {...props} />,
+                          code: (props) => <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded text-xs" {...props} />,
+                          table: (props) => <table className="border-collapse border border-gray-400 dark:border-gray-600 text-xs mb-2" {...props} />,
+                          tr: (props) => <tr className="border border-gray-400 dark:border-gray-600" {...props} />,
+                          td: (props) => <td className="border border-gray-400 dark:border-gray-600 px-2 py-1" {...props} />,
+                          th: (props) => <th className="border border-gray-400 dark:border-gray-600 px-2 py-1 bg-gray-200 dark:bg-gray-700 font-bold" {...props} />,
                         }}
                       >
                         {message.text}
