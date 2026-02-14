@@ -58,28 +58,34 @@ app.use(passport.session());
 // Database connection with graceful fallback
 let isConnected = false;
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/visa-advisor";
+const MONGODB_URI = process.env.MONGODB_URI;
 const MAX_RETRIES = 3;
-const INITIAL_RETRY_DELAY = 1000; // 1 second
+const INITIAL_RETRY_DELAY = 2000; // 2 seconds
 
 const connectDB = async () => {
   if (isConnected) {
+    return;
+  }
+
+  if (!MONGODB_URI) {
+    console.error("❌ MONGODB_URI is not defined in environment variables");
+    console.error("⚠️  Server will run without database. Some features will be unavailable.");
     return;
   }
   
   let retries = 0;
   const attemptConnect = async () => {
     try {
-      console.log(`🔄 Attempting to connect to MongoDB (attempt ${retries + 1}/${MAX_RETRIES})...`);
+      console.log(`🔄 Attempting to connect to MongoDB Atlas (attempt ${retries + 1}/${MAX_RETRIES})...`);
       await mongoose.connect(MONGODB_URI, {
-        serverSelectionTimeoutMS: 5000,
-        connectTimeoutMS: 10000,
+        dbName: "visa-advisor",
+        serverSelectionTimeoutMS: 10000,
+        connectTimeoutMS: 20000,
         socketTimeoutMS: 45000,
-        retryWrites: true,
-        w: "majority",
       });
       isConnected = true;
-      console.log("✅ Connected to MongoDB");
+      console.log("✅ Connected to MongoDB Atlas successfully");
+      console.log(`📊 Database: visa-advisor`);
     } catch (error) {
       retries++;
       if (retries < MAX_RETRIES) {
@@ -88,12 +94,14 @@ const connectDB = async () => {
         console.error("Error details:", error.message);
         setTimeout(attemptConnect, delay);
       } else {
-        console.error("❌ MongoDB connection failed after", MAX_RETRIES, "attempts");
+        console.error("❌ MongoDB Atlas connection failed after", MAX_RETRIES, "attempts");
         console.error("⚠️  Server will run without database. Some features will be unavailable.");
-        console.error("MongoDB URI used:", MONGODB_URI);
         console.error("Error:", error.message);
-        console.error("\n📖 For Render deployment, set MONGODB_URI to a cloud MongoDB (e.g., MongoDB Atlas)");
-        console.error("   Do NOT use localhost - it won't work in cloud environments.");
+        console.error("\n📖 Troubleshooting:");
+        console.error("   1. Verify MONGODB_URI is correct");
+        console.error("   2. Check MongoDB Atlas Network Access (IP whitelist)");
+        console.error("   3. Verify database user credentials");
+        console.error("   4. Ensure cluster is running");
         // Don't throw - allow server to start without DB
       }
     }
