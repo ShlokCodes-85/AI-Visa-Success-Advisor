@@ -32,10 +32,10 @@ const validatePassword = (password) => {
 // Register
 router.post("/register", async (req, res) => {
   try {
-    const { fullName, username, email, password } = req.body;
+    const { fullName, email, password } = req.body;
 
     // Validate required fields
-    if (!fullName || !username || !email || !password) {
+    if (!fullName || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -49,17 +49,10 @@ router.post("/register", async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await User.findOne({ 
-      $or: [{ email }, { username }] 
-    });
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      if (existingUser.email === email) {
-        return res.status(400).json({ message: "Email already registered" });
-      }
-      if (existingUser.username === username) {
-        return res.status(400).json({ message: "Username already taken" });
-      }
+      return res.status(400).json({ message: "Email already registered" });
     }
 
     // Hash password
@@ -69,7 +62,6 @@ router.post("/register", async (req, res) => {
     // Create user
     const user = await User.create({
       fullName,
-      username,
       email,
       password: hashedPassword,
       authProvider: "local",

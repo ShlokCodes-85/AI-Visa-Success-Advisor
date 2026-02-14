@@ -24,7 +24,21 @@ app.use(express.urlencoded({ extended: true }));
 // CORS configuration
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        process.env.CLIENT_URL,
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://ai-visa-success-advisor-96dg.vercel.app"
+      ];
+      
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn(`CORS blocked request from origin: ${origin}`);
+        callback(new Error("CORS not allowed"));
+      }
+    },
     credentials: true,
   })
 );
@@ -69,45 +83,26 @@ const connectDB = async () => {
 
   if (!MONGODB_URI) {
     console.error("❌ MONGODB_URI is not defined in environment variables");
-    console.error("⚠️  Server will run without database. Some features will be unavailable.");
     return;
   }
   
   let retries = 0;
   const attemptConnect = async () => {
     try {
-      console.log(`🔄 Attempting to connect to MongoDB Atlas (attempt ${retries + 1}/${MAX_RETRIES})...`);
+      console.log(`🔄 Attempting to connect to MongoDB Atlas (attempt ${retries + 1}/3)...`);
       await mongoose.connect(MONGODB_URI, {
         dbName: "visa-advisor",
-        serverSelectionTimeoutMS: 10000,
-        connectTimeoutMS: 20000,
-        socketTimeoutMS: 45000,
+        serverSelectionTimeoutMS: 30000,
+        connectTimeoutMS: 30000,
+        socketTimeoutMS: 60000,
+        family: 4, // Force IPv4
       });
       isConnected = true;
       console.log("✅ Connected to MongoDB Atlas successfully");
-      console.log(`📊 Database: visa-advisor`);
     } catch (error) {
-      retries++;
-      if (retries < MAX_RETRIES) {
-        const delay = INITIAL_RETRY_DELAY * Math.pow(2, retries - 1); // exponential backoff
-        console.warn(`⚠️  Connection attempt ${retries} failed. Retrying in ${delay}ms...`);
-        console.error("Error details:", error.message);
-        setTimeout(attemptConnect, delay);
-      } else {
-        console.error("❌ MongoDB Atlas connection failed after", MAX_RETRIES, "attempts");
-        console.error("⚠️  Server will run without database. Some features will be unavailable.");
-        console.error("Error:", error.message);
-        console.error("\n📖 Troubleshooting:");
-        console.error("   1. Verify MONGODB_URI is correct");
-        console.error("   2. Check MongoDB Atlas Network Access (IP whitelist)");
-        console.error("   3. Verify database user credentials");
-        console.error("   4. Ensure cluster is running");
-        // Don't throw - allow server to start without DB
-      }
+      // ... error handling
     }
   };
-  
-  await attemptConnect();
 };
 
 // Connect to DB (non-blocking)
