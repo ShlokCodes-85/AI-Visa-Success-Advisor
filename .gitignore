@@ -24,6 +24,10 @@ dist/
 dist-ssr/
 *.local
 
+# SOP samples
+Bad SOPs/
+Good SOPs/
+
 # Python
 __pycache__/
 *.py[cod]
