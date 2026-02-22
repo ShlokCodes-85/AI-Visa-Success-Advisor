@@ -23,7 +23,7 @@ export default function InterviewHistory({ formData, handleInputChange, errors =
             value={formData.hasInterviewExperience}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.hasInterviewExperience ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.hasInterviewExperience ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select option</option>
@@ -46,7 +46,7 @@ export default function InterviewHistory({ formData, handleInputChange, errors =
               value={formData.visaDestinationCountry || ""}
               onChange={handleInputChange}
               className={`w-full px-4 py-3 border ${
-                errors.visaDestinationCountry ? "border-red-500" : "border-black dark:border-gray-600"
+                errors.visaDestinationCountry ? "border-red-500" : "border-transparent dark:border-gray-600"
               } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
             >
               <option value="">Select a country</option>
@@ -69,7 +69,7 @@ export default function InterviewHistory({ formData, handleInputChange, errors =
               value={formData.visaStatus || ""}
               onChange={handleInputChange}
               className={`w-full px-4 py-3 border ${
-                errors.visaStatus ? "border-red-500" : "border-black dark:border-gray-600"
+                errors.visaStatus ? "border-red-500" : "border-transparent dark:border-gray-600"
               } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
             >
               <option value="">Select option</option>
@@ -95,7 +95,7 @@ export default function InterviewHistory({ formData, handleInputChange, errors =
                 min="1950"
                 max={new Date().getFullYear()}
                 className={`w-full px-4 py-3 border ${
-                  errors.applicationYear ? "border-red-500" : "border-black dark:border-gray-600"
+                  errors.applicationYear ? "border-red-500" : "border-transparent dark:border-gray-600"
                 } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400`}
               />
             </div>
@@ -113,7 +113,7 @@ export default function InterviewHistory({ formData, handleInputChange, errors =
                 value={formData.rejectionReason || ""}
                 onChange={handleInputChange}
                 className={`w-full px-4 py-3 border ${
-                  errors.rejectionReason ? "border-red-500" : "border-black dark:border-gray-600"
+                  errors.rejectionReason ? "border-red-500" : "border-transparent dark:border-gray-600"
                 } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
               >
                 <option value="">Select rejection reason</option>
@@ -140,7 +140,7 @@ export default function InterviewHistory({ formData, handleInputChange, errors =
                   value={formData.deportationOrIssues || ""}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-3 border ${
-                    errors.deportationOrIssues ? "border-red-500" : "border-black dark:border-gray-600"
+                    errors.deportationOrIssues ? "border-red-500" : "border-transparent dark:border-gray-600"
                   } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
                 >
                   <option value="">Select option</option>
@@ -170,7 +170,7 @@ export default function InterviewHistory({ formData, handleInputChange, errors =
                       : "Please describe the issues you faced..."}
                     rows={4}
                     className={`w-full px-4 py-3 border ${
-                      errors.deportationOrIssuesDetails ? "border-red-500" : "border-black dark:border-gray-600"
+                      errors.deportationOrIssuesDetails ? "border-red-500" : "border-transparent dark:border-gray-600"
                     } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none placeholder-gray-500 dark:placeholder-gray-400`}
                   />
                 </div>

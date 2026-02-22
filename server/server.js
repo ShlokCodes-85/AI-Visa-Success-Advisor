@@ -100,9 +100,19 @@ const connectDB = async () => {
       isConnected = true;
       console.log("✅ Connected to MongoDB Atlas successfully");
     } catch (error) {
-      // ... error handling
+      retries += 1;
+      console.error("❌ MongoDB connection error:", error.message);
+      if (retries < MAX_RETRIES) {
+        const delay = INITIAL_RETRY_DELAY * retries;
+        console.log(`⏳ Retrying in ${delay / 1000}s...`);
+        setTimeout(attemptConnect, delay);
+      } else {
+        console.error("🛑 MongoDB connection failed after maximum retries");
+      }
     }
   };
+
+  attemptConnect();
 };
 
 // Connect to DB (non-blocking)
@@ -127,9 +137,13 @@ app.get("/", (req, res) => {
 
 // Database status endpoint
 app.get("/api/health", (req, res) => {
-  res.json({
-    status: "ok",
-    mongodb: isConnected ? "connected" : "disconnected",
+  const dbReadyState = mongoose.connection.readyState;
+  const dbConnected = isConnected && dbReadyState === 1;
+
+  res.status(dbConnected ? 200 : 503).json({
+    status: dbConnected ? "ok" : "degraded",
+    mongodb: dbConnected ? "connected" : "disconnected",
+    dbReadyState,
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
   });

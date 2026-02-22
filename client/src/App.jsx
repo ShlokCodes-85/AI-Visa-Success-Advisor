@@ -7,6 +7,7 @@ import FAQ from "./components/FAQ";
 import Testimonials from "./components/Testimonials";
 import Footer from "./components/Footer";
 import OAuthSuccess from "./pages/OAuthSuccess";
+import ResetPassword from "./pages/ResetPassword";
 import ApplicationForm from "./pages/FormMode/ApplicationForm";
 import { ApplicationProvider } from "./contexts/ApplicationContext";
 
@@ -24,6 +25,7 @@ function App() {
     <ApplicationProvider>
       <Routes>
         <Route path="/oauth/success" element={<OAuthSuccess />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route
           path="/application"
           element={

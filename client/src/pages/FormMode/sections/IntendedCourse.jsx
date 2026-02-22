@@ -17,7 +17,7 @@ export default function IntendedCourse({ formData, handleInputChange, errors = {
             value={formData.courseType}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.courseType ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.courseType ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select course type</option>
@@ -40,7 +40,7 @@ export default function IntendedCourse({ formData, handleInputChange, errors = {
             onChange={handleInputChange}
             placeholder="e.g., Oxford University"
             className={`w-full px-4 py-3 border ${
-              errors.universityName ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.universityName ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400`}
           />
         </div>
@@ -57,7 +57,7 @@ export default function IntendedCourse({ formData, handleInputChange, errors = {
             onChange={handleInputChange}
             placeholder="e.g., Master of Science in Computer Science"
             className={`w-full px-4 py-3 border ${
-              errors.courseName ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.courseName ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400`}
           />
         </div>
@@ -74,7 +74,7 @@ export default function IntendedCourse({ formData, handleInputChange, errors = {
               value={formData.startDate}
               onChange={handleInputChange}
               className={`w-full px-4 py-3 border ${
-                errors.startDate ? "border-red-500" : "border-black dark:border-gray-600"
+                errors.startDate ? "border-red-500" : "border-transparent dark:border-gray-600"
               } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all cursor-pointer`}
             />
             <Calendar className="absolute right-4 top-3.5 w-5 h-5 text-black dark:text-gray-300 pointer-events-none" />

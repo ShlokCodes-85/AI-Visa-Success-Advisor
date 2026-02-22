@@ -1,11 +1,36 @@
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import FeatureCard from "./FeatureCard";
 import { MdDescription, MdTrackChanges } from "react-icons/md";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { HiOutlineChartBar } from "react-icons/hi2";
-import useLazyLoad from '../hooks/useLazyLoad';
 
 function Features() {
-  const { elementRef, isVisible } = useLazyLoad();
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
+  };
+
   const features = [
     {
       title: "Comprehensive Form Guidance",
@@ -34,23 +59,34 @@ function Features() {
   ];
 
   return (
-    <section ref={elementRef} id="features" className="py-8 pb-12 px-5 bg-gray-50 dark:bg-gray-900" style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.6s ease-in' }}>
-      <div className="max-w-6xl mx-auto text-center mb-8">
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
+    <section id="features" className="py-8 sm:py-10 lg:py-12 pb-8 sm:pb-12 lg:pb-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-6xl mx-auto text-center mb-6 sm:mb-8 lg:mb-10">
+        <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white px-2 sm:px-0">
           Key Features Designed For Your Success
         </h2>
       </div>
 
-      <div className="group/container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <motion.div 
+        className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         {features.map((feature, index) => (
-          <FeatureCard
-            key={index}
-            title={feature.title}
-            description={feature.description}
-            icon={feature.icon}
-          />
+          <motion.div key={index} variants={cardVariants}>
+            <FeatureCard
+              title={feature.title}
+              description={feature.description}
+              icon={feature.icon}
+              isHovered={hoveredIndex === index}
+              isDimmed={hoveredIndex !== null && hoveredIndex !== index}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
     </section>
   );

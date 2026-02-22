@@ -58,7 +58,7 @@ export default function ExamInfo({ formData, setFormData, errors = {} }) {
             value={formData.visaDestinationCountry || ""}
             onChange={handleChange}
             className={`w-full px-4 py-3 border ${
-              errors.visaDestinationCountry ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.visaDestinationCountry ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select a country</option>
@@ -94,7 +94,7 @@ export default function ExamInfo({ formData, setFormData, errors = {} }) {
             onChange={handleChange}
             disabled={!country}
             className={`w-full px-4 py-3 border ${
-              errors.examType ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.examType ? "border-red-500" : "border-transparent dark:border-gray-600"
             } ${!country ? "bg-gray-100 dark:bg-gray-700 cursor-not-allowed" : "bg-white dark:bg-gray-800"} text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">{!country ? "Select country first" : "Select Exam"}</option>
@@ -121,7 +121,7 @@ export default function ExamInfo({ formData, setFormData, errors = {} }) {
             placeholder={formData.examType ? getExamPlaceholder(formData.examType) : "Select exam first"}
             disabled={!formData.examType}
             className={`w-full px-4 py-3 border ${
-              errors.examScore ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.examScore ? "border-red-500" : "border-transparent dark:border-gray-600"
             } ${!formData.examType ? "bg-gray-100 dark:bg-gray-700 cursor-not-allowed" : "bg-white dark:bg-gray-800"} text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400`}
           />
           {formData.examType && (

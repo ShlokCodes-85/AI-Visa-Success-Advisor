@@ -81,7 +81,8 @@ export default function ApplicationForm() {
       }
 
       try {
-        const response = await fetch(`https://ai-visa-success-advisor.onrender.com/api/chats`, {
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+        const response = await fetch(`${BACKEND_URL}/api/chats`, {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
@@ -133,7 +134,8 @@ export default function ApplicationForm() {
 
       console.log("Loading messages for chat:", activeChat);
       try {
-        const response = await fetch(`https://ai-visa-success-advisor.onrender.com/api/chats/${activeChat}`, {
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+        const response = await fetch(`${BACKEND_URL}/api/chats/${activeChat}`, {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
@@ -400,8 +402,8 @@ export default function ApplicationForm() {
 
       {/* Conditional Content Based on Mode */}
       {mode === "chat" ? (
-        <div className="flex h-[calc(100vh-64px)]">
-          <div className="w-80">
+        <div className="flex h-[calc(100vh-56px)] sm:h-[calc(100vh-64px)] flex-col lg:flex-row">
+          <div className="hidden lg:block w-64 xl:w-80 flex-shrink-0">
             <ChatSidebar 
               chats={chats}
               setChats={setChats}
@@ -413,7 +415,7 @@ export default function ApplicationForm() {
               setEditTitle={setEditTitle}
             />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 overflow-hidden">
             <ChatContent 
               activeChat={activeChat}
               chats={chats}
@@ -423,7 +425,7 @@ export default function ApplicationForm() {
           </div>
         </div>
       ) : (
-        <div className="max-w-7xl mx-auto flex gap-6 px-6 py-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 px-4 sm:px-6 py-4 sm:py-8">
           <Sidebar
             sections={sections}
             currentSection={currentSection}
@@ -431,14 +433,14 @@ export default function ApplicationForm() {
             completedSections={completedSections}
           />
 
-          <div className="flex-1 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+          <div className="lg:col-span-3 bg-white dark:bg-gray-900 rounded-lg sm:rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
             {renderSection()}
 
-            <div className="mt-8 flex justify-between pt-8 border-t border-gray-200 dark:border-gray-700">
+            <div className="mt-6 sm:mt-8 flex flex-col xs:flex-row justify-between gap-3 pt-6 sm:pt-8 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={() => setCurrentSection(Math.max(1, currentSection - 1))}
                 disabled={currentSection === 1}
-                className="px-6 py-2 rounded-lg border border-black dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-gray-100 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+                className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg border border-transparent dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-gray-100 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 text-sm sm:text-base min-h-[44px] sm:min-h-[auto]"
               >
                 Previous
               </button>
@@ -451,7 +453,7 @@ export default function ApplicationForm() {
                     if (currentSection < 8) setCurrentSection(currentSection + 1);
                   }
                 }}
-                className="px-8 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
+                className="px-6 sm:px-8 py-2 sm:py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 text-sm sm:text-base min-h-[44px] sm:min-h-[auto]"
               >
                 {currentSection === 8 ? "Submit Form" : "Save and Continue"}
               </button>

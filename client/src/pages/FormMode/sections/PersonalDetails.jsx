@@ -64,7 +64,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
               onChange={handleInputChange}
               max={new Date().toISOString().split('T')[0]}
               className={`w-full px-4 py-3 border ${
-                errors.dateOfBirth ? "border-red-500" : "border-black dark:border-gray-600"
+                errors.dateOfBirth ? "border-red-500" : "border-transparent dark:border-gray-600"
               } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all cursor-pointer`}
             />
             <Calendar className="absolute right-4 top-3.5 w-5 h-5 text-black dark:text-gray-300 pointer-events-none" />
@@ -81,7 +81,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             value={formData.gender || ''}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.gender ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.gender ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select your gender</option>
@@ -121,7 +121,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             value={formData.nationality}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.nationality ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.nationality ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select your nationality</option>
@@ -142,7 +142,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             value={formData.countryOfResidency || ''}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.countryOfResidency ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.countryOfResidency ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select country of residency</option>

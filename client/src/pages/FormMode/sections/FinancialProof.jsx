@@ -18,7 +18,7 @@ export default function FinancialProof({ formData, handleInputChange, errors = {
           value={formData.requiredCurrency || ""}
           onChange={handleInputChange}
           className={`w-full px-4 py-3 border ${
-            errors.requiredCurrency ? "border-red-500" : "border-black dark:border-gray-600"
+            errors.requiredCurrency ? "border-red-500" : "border-transparent dark:border-gray-600"
           } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
         >
           <option value="">Select a currency</option>
@@ -45,7 +45,7 @@ export default function FinancialProof({ formData, handleInputChange, errors = {
               onChange={handleInputChange}
               placeholder="Enter amount"
               className={`flex-1 px-4 py-3 border ${
-                errors.requiredFunding ? "border-red-500" : "border-black dark:border-gray-600"
+                errors.requiredFunding ? "border-red-500" : "border-transparent dark:border-gray-600"
               } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400`}
             />
           </div>
@@ -78,7 +78,7 @@ export default function FinancialProof({ formData, handleInputChange, errors = {
               placeholder="e.g., 500000"
               disabled={!formData.requiredCurrency}
               className={`flex-1 px-4 py-3 border ${
-                errors.familyIncome ? "border-red-500" : "border-black dark:border-gray-600"
+                errors.familyIncome ? "border-red-500" : "border-transparent dark:border-gray-600"
               } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed`}
             />
           </div>
@@ -106,7 +106,7 @@ export default function FinancialProof({ formData, handleInputChange, errors = {
               placeholder="e.g., 1000000"
               disabled={!formData.requiredCurrency}
               className={`flex-1 px-4 py-3 border ${
-                errors.savingsAmount ? "border-red-500" : "border-black dark:border-gray-600"
+                errors.savingsAmount ? "border-red-500" : "border-transparent dark:border-gray-600"
               } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed`}
             />
           </div>
@@ -124,7 +124,7 @@ export default function FinancialProof({ formData, handleInputChange, errors = {
             onChange={handleInputChange}
             placeholder="e.g., Raj Kumar"
             className={`w-full px-4 py-3 border ${
-              errors.sponsorName ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.sponsorName ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400`}
           />
         </div>
@@ -139,7 +139,7 @@ export default function FinancialProof({ formData, handleInputChange, errors = {
             value={formData.sponsorRelation}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.sponsorRelation ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.sponsorRelation ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select relation</option>

@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub, FaFacebook } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoArrowBack } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { FaCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const BACKEND_URL = "https://ai-visa-success-advisor.onrender.com";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 export default function AuthModal({ onClose }) {
   const navigate = useNavigate();
@@ -19,6 +19,15 @@ export default function AuthModal({ onClose }) {
   });
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [formError, setFormError] = useState("");
+  const [resetSuccess, setResetSuccess] = useState(false);
+
+  // Prevent scrolling when modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
 
   const passwordValidation = {
     hasUppercase: /[A-Z]/.test(formData.password),
@@ -41,7 +50,55 @@ export default function AuthModal({ onClose }) {
       confirmPassword: "",
     });
     setPasswordFocused(false);
+    setResetSuccess(false);
     if (formError) setFormError("");
+  };
+
+  const handleForgotPassword = () => {
+    setMode("forgot-password");
+    setFormData({
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+    setFormError("");
+    setResetSuccess(false);
+  };
+
+  const handleBackToLogin = () => {
+    setMode("login");
+    setFormData({
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+    setFormError("");
+    setResetSuccess(false);
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setFormError("");
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setResetSuccess(true);
+      } else {
+        setFormError(data.message || "Failed to send reset email. Please try again.");
+      }
+    } catch {
+      setFormError("An error occurred. Please try again later.");
+    }
   };
 
   const handleOAuth = (provider) => {
@@ -94,22 +151,89 @@ export default function AuthModal({ onClose }) {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className={`w-full ${mode === "signup" ? "max-w-[450px]" : "max-w-[400px]"} bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-2xl dark:shadow-gray-900/50 relative transform transition-all`}>
+        {mode === "forgot-password" ? (
+          <button
+            onClick={handleBackToLogin}
+            className="absolute left-2 top-2 p-1 bg-white dark:bg-gray-700 border border-transparent rounded hover:border-transparent dark:hover:border-gray-400 transition-all"
+          >
+            <IoArrowBack className="text-lg text-black dark:text-gray-100" />
+          </button>
+        ) : null}
         <button
           onClick={onClose}
-          className="absolute right-2 top-2 p-1 bg-white dark:bg-gray-700 border border-transparent rounded hover:border-black dark:hover:border-gray-400 transition-all"
+          className="absolute right-2 top-2 p-1 bg-white dark:bg-gray-700 border border-transparent rounded hover:border-transparent dark:hover:border-gray-400 transition-all"
         >
           <IoClose className="text-lg text-black dark:text-gray-100" />
         </button>
 
         <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
-          {mode === "login" ? "Welcome Back!" : "Create Account"}
+          {mode === "login" ? "Welcome Back!" : mode === "signup" ? "Create Account" : "Reset Password"}
         </h2>
         <p className="text-gray-500 dark:text-gray-400 text-center mb-5">
-          {mode === "login" ? "Sign in to continue your visa journey" : "Start your visa success journey today"}
+          {mode === "login" 
+            ? "Sign in to continue your visa journey" 
+            : mode === "signup" 
+            ? "Start your visa success journey today"
+            : "Enter your email to receive password reset instructions"}
         </p>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-3">
+        {/* Forgot Password Form */}
+        {mode === "forgot-password" ? (
+          <>
+            {resetSuccess ? (
+              <div className="space-y-4">
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 text-center">
+                  <div className="flex justify-center mb-3">
+                    <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                      <FaCheck className="text-white text-xl" />
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">Check Your Email</h3>
+                  <p className="text-sm text-green-700 dark:text-green-300">
+                    We've sent password reset instructions to <strong>{formData.email}</strong>
+                  </p>
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-2">
+                    Please check your inbox and follow the link to reset your password.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleBackToLogin}
+                  className="w-full py-2.5 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5"
+                >
+                  Back to Sign In
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleResetPassword} className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 w-28 shrink-0">Email ID</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    placeholder="Enter your email"
+                    className="flex-1 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none focus:outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <button className="w-full py-2.5 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
+                  Send Reset Link
+                </button>
+
+                {formError && (
+                  <div className="text-red-500 text-sm font-medium mt-3 text-center">
+                    {formError}
+                  </div>
+                )}
+              </form>
+            )}
+          </>
+        ) : (
+          /* Login/Signup Form */
+          <form onSubmit={handleSubmit} className="space-y-3">
           {mode === "signup" && (
             <>
               <div className="flex items-center gap-3">
@@ -119,7 +243,7 @@ export default function AuthModal({ onClose }) {
                   name="fullName"
                   value={formData.fullName}
                   placeholder="Enter your full name"
-                  className="flex-1 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400"
+                  className="flex-1 px-3 py-2 bg-white dark:bg-gray-700 border border-transparent dark:border-gray-600 rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none focus:outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400"
                   onChange={handleChange}
                   required
                 />
@@ -134,7 +258,7 @@ export default function AuthModal({ onClose }) {
               name="email"
               value={formData.email}
               placeholder="Enter your email"
-              className="flex-1 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400"
+              className="flex-1 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none focus:outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400"
               onChange={handleChange}
               required
             />
@@ -148,7 +272,7 @@ export default function AuthModal({ onClose }) {
                 name="password"
                 value={formData.password}
                 placeholder="Enter your password"
-                className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400"
+                className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none focus:outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400"
                 onChange={handleChange}
                 onFocus={() => setPasswordFocused(true)}
                 onBlur={() => setPasswordFocused(false)}
@@ -177,6 +301,21 @@ export default function AuthModal({ onClose }) {
             </div>
           </div>
 
+          {/* Forgot Password Link - Only show for login */}
+          {mode === "login" && (
+            <div className="flex items-center gap-3">
+              <div className="w-28 shrink-0"></div>
+              <div className="flex-1">
+                <span
+                  onClick={handleForgotPassword}
+                  className="text-sm text-blue-400 font-semibold cursor-pointer hover:underline"
+                >
+                  Forgot Password?
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* formError is shown below the Sign In / Create Account button */}
 
           {mode === "signup" && (
@@ -188,7 +327,7 @@ export default function AuthModal({ onClose }) {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   placeholder="Confirm your password"
-                  className={`w-full px-3 py-2 bg-white dark:bg-gray-700 border rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400 ${
+                  className={`w-full px-3 py-2 bg-white dark:bg-gray-700 border rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none focus:outline-none transition-all text-sm placeholder-gray-500 dark:placeholder-gray-400 ${
                     formData.confirmPassword && formData.password !== formData.confirmPassword
                       ? "border-red-500"
                       : "border-gray-300 dark:border-gray-600"
@@ -216,6 +355,7 @@ export default function AuthModal({ onClose }) {
             </div>
           )}
         </form>
+        )}
 
         {/* OAuth Buttons - Only show for login */}
         {mode === "login" && (
@@ -242,14 +382,14 @@ export default function AuthModal({ onClose }) {
 
         {/* Switch */}
         <p className="text-center text-sm mt-5 text-gray-600">
-          {mode === "login" ? "Don't have an account? " : "Already have an account? "}
-          <span
-            className="text-blue-400 font-semibold cursor-pointer hover:underline"
-            onClick={handleModeSwitch}
-          >
-            {mode === "login" ? "Sign Up" : "Sign In"}
-          </span>
-        </p>
+            {mode === "login" ? "Don't have an account? " : "Already have an account? "}
+            <span
+              className="text-blue-400 font-semibold cursor-pointer hover:underline"
+              onClick={handleModeSwitch}
+            >
+              {mode === "login" ? "Sign Up" : "Sign In"}
+            </span>
+          </p>
       </div>
     </div>
   );

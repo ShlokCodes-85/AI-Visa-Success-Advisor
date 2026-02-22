@@ -27,7 +27,7 @@ export default function EducationBackground({ formData, handleInputChange, error
             value={formData.educationLevel}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.educationLevel ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.educationLevel ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select education level</option>
@@ -66,7 +66,7 @@ export default function EducationBackground({ formData, handleInputChange, error
             value={formData.graduationYear}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.graduationYear ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.graduationYear ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select graduation year</option>
@@ -88,7 +88,7 @@ export default function EducationBackground({ formData, handleInputChange, error
             value={formData.gpaScale || ""}
             onChange={handleInputChange}
             className={`w-full px-4 py-3 border ${
-              errors.gpaScale ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.gpaScale ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
           >
             <option value="">Select Scale</option>
@@ -115,7 +115,7 @@ export default function EducationBackground({ formData, handleInputChange, error
             placeholder={`e.g., ${formData.gpaScale === "100" ? "85" : "3.8"}`}
             disabled={!formData.gpaScale}
             className={`w-full px-4 py-3 border ${
-              errors.gpa ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.gpa ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400 ${
               !formData.gpaScale ? "opacity-50 cursor-not-allowed" : ""
             }`}

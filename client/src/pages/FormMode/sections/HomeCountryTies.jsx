@@ -17,7 +17,7 @@ export default function HomeCountryTies({ formData, handleInputChange, errors = 
             onChange={handleInputChange}
             placeholder="e.g., Residential House in Delhi"
             className={`w-full px-4 py-3 border ${
-              errors.propertyOwnership ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.propertyOwnership ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400`}
           />
         </div>
@@ -34,7 +34,7 @@ export default function HomeCountryTies({ formData, handleInputChange, errors = 
             onChange={handleInputChange}
             placeholder="e.g., Parents, 2 siblings"
             className={`w-full px-4 py-3 border ${
-              errors.familyMembers ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.familyMembers ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400`}
           />
         </div>
@@ -51,7 +51,7 @@ export default function HomeCountryTies({ formData, handleInputChange, errors = 
             onChange={handleInputChange}
             placeholder="e.g., Self-employed"
             className={`w-full px-4 py-3 border ${
-              errors.employment ? "border-red-500" : "border-black dark:border-gray-600"
+              errors.employment ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400`}
           />
         </div>

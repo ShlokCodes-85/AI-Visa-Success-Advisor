@@ -32,7 +32,8 @@ export default function ChatContent({
     if (!token || !activeChat) return;
 
     try {
-      const response = await fetch(`https://ai-visa-success-advisor.onrender.com/api/chats/${activeChat}/messages`, {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+      const response = await fetch(`${BACKEND_URL}/api/chats/${activeChat}/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -243,59 +244,59 @@ export default function ChatContent({
   };
 
   return (
-    <div className="h-full px-3 py-4">
+    <div className="h-full px-2 sm:px-3 py-3 sm:py-4">
       {!activeChat ? (
         // Empty State - No Chat Selected
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col h-full items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">Chat with the Advisor</h2>
-            <p className="text-gray-600 dark:text-gray-300 text-lg mb-2">Get expert guidance on your visa application journey</p>
-            <p className="text-gray-500 dark:text-gray-400 text-base">Create a new chat to start a conversation with our AI advisor</p>
+        <div className="bg-white dark:bg-gray-900 rounded-lg sm:rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col h-full items-center justify-center p-4 sm:p-6">
+          <div className="text-center max-w-md mx-auto">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3">Chat with the Advisor</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base lg:text-lg mb-1 sm:mb-2">Get expert guidance on your visa application journey</p>
+            <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">Create a new chat to start a conversation with our AI advisor</p>
           </div>
         </div>
       ) : (
         // Active Chat Interface
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col h-full">
+        <div className="bg-white dark:bg-gray-900 rounded-lg sm:rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col h-full">
           {/* Chat Header */}
-          <div className="px-4 py-2.5 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{currentChatName}</h2>
+          <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 truncate">{currentChatName}</h2>
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-2 sm:space-y-3">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[70%] rounded-2xl px-4 py-3 ${
+                  className={`max-w-[85%] xs:max-w-[75%] sm:max-w-[70%] rounded-lg sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-3 text-xs xs:text-sm ${
                     message.type === "user"
                       ? "bg-blue-500 text-white"
                       : "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100"
                   }`}
                 >
                   {message.type === "user" ? (
-                    <p className="text-sm">{message.text}</p>
+                    <p>{message.text}</p>
                   ) : (
-                    <div className="text-sm prose prose-sm max-w-none dark:prose-invert">
+                    <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-base prose-p:text-xs prose-p:mb-1 prose-ul:text-xs prose-li:mb-0">
                       <ReactMarkdown
                         components={{
-                          p: (props) => <p className="mb-2 last:mb-0" {...props} />,
-                          ul: (props) => <ul className="list-disc list-inside mb-2" {...props} />,
-                          ol: (props) => <ol className="list-decimal list-inside mb-2" {...props} />,
-                          li: (props) => <li className="mb-1" {...props} />,
+                          p: (props) => <p className="mb-1 last:mb-0" {...props} />,
+                          ul: (props) => <ul className="list-disc list-inside mb-1" {...props} />,
+                          ol: (props) => <ol className="list-decimal list-inside mb-1" {...props} />,
+                          li: (props) => <li className="mb-0.5" {...props} />,
                           strong: (props) => <strong className="font-bold" {...props} />,
                           em: (props) => <em className="italic" {...props} />,
-                          h1: (props) => <h1 className="text-lg font-bold mb-2" {...props} />,
-                          h2: (props) => <h2 className="text-base font-bold mb-2" {...props} />,
-                          h3: (props) => <h3 className="text-sm font-bold mb-2" {...props} />,
-                          blockquote: (props) => <blockquote className="border-l-4 border-gray-400 dark:border-gray-600 pl-2 italic mb-2" {...props} />,
-                          code: (props) => <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded text-xs" {...props} />,
-                          table: (props) => <table className="border-collapse border border-gray-400 dark:border-gray-600 text-xs mb-2" {...props} />,
+                          h1: (props) => <h1 className="text-sm font-bold mb-1" {...props} />,
+                          h2: (props) => <h2 className="text-xs font-bold mb-1" {...props} />,
+                          h3: (props) => <h3 className="text-xs font-bold mb-1" {...props} />,
+                          blockquote: (props) => <blockquote className="border-l-4 border-gray-400 dark:border-gray-600 pl-2 italic mb-1" {...props} />,
+                          code: (props) => <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded text-[10px]" {...props} />,
+                          table: (props) => <table className="border-collapse border border-gray-400 dark:border-gray-600 text-[10px] mb-1" {...props} />,
                           tr: (props) => <tr className="border border-gray-400 dark:border-gray-600" {...props} />,
-                          td: (props) => <td className="border border-gray-400 dark:border-gray-600 px-2 py-1" {...props} />,
-                          th: (props) => <th className="border border-gray-400 dark:border-gray-600 px-2 py-1 bg-gray-200 dark:bg-gray-700 font-bold" {...props} />,
+                          td: (props) => <td className="border border-gray-400 dark:border-gray-600 px-1 py-0.5" {...props} />,
+                          th: (props) => <th className="border border-gray-400 dark:border-gray-600 px-1 py-0.5 bg-gray-200 dark:bg-gray-700 font-bold" {...props} />,
                         }}
                       >
                         {message.text}
@@ -307,8 +308,8 @@ export default function ChatContent({
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="max-w-[70%] rounded-2xl px-4 py-3 bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100">
-                  <div className="flex items-center gap-2">
+                <div className="max-w-[75%] sm:max-w-[70%] rounded-lg sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-3 bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     <div className="w-2 h-2 bg-gray-600 dark:bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
                     <div className="w-2 h-2 bg-gray-600 dark:bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
                     <div className="w-2 h-2 bg-gray-600 dark:bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
@@ -319,7 +320,7 @@ export default function ChatContent({
           </div>
 
           {/* Input Area */}
-          <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+          <div className="px-2 sm:px-4 py-2 sm:py-3 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
             {attachments.length > 0 && (
               <div className="mb-2 space-y-1">
                 {attachments.map((file, index) => (
@@ -332,8 +333,8 @@ export default function ChatContent({
                 ))}
               </div>
             )}
-            <form onSubmit={handleSendMessage} className="flex gap-3 items-center">
-              <label className="cursor-pointer p-2 bg-blue-500 hover:bg-blue-600 rounded-full transition-colors" title="Attach document">
+            <form onSubmit={handleSendMessage} className="flex gap-2 sm:gap-3 items-center">
+              <label className="cursor-pointer p-2 bg-blue-500 hover:bg-blue-600 rounded-full transition-colors flex-shrink-0 min-h-[40px] min-w-[40px] flex items-center justify-center" title="Attach document">
                 <FiPlus className="text-lg text-white" />
                 <input
                   type="file"
@@ -347,17 +348,17 @@ export default function ChatContent({
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                placeholder="Type your message here..."
+                placeholder="Type message..."
                 disabled={isLoading}
-                className="flex-1 px-4 py-2.5 bg-white dark:bg-gray-800 text-black dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 disabled:opacity-50 disabled:cursor-not-allowed placeholder-gray-500 dark:placeholder-gray-400"
+                className="flex-1 px-3 sm:px-4 py-2 bg-white dark:bg-gray-800 text-black dark:text-gray-100 border border-transparent dark:border-gray-700 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 disabled:opacity-50 disabled:cursor-not-allowed placeholder-gray-500 dark:placeholder-gray-400 text-sm min-h-[40px]"
               />
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-5 py-2.5 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 sm:px-5 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all flex items-center gap-1 sm:gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 min-h-[40px] text-xs sm:text-sm"
               >
-                <FiSend className="text-lg" />
-                {isLoading ? "Sending..." : "Send"}
+                <FiSend className="text-base" />
+                <span className="hidden xs:inline">{isLoading ? "Sending..." : "Send"}</span>
               </button>
             </form>
           </div>

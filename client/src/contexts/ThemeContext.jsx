@@ -8,7 +8,7 @@ export const ThemeProvider = ({ children }) => {
     if (savedMode) {
       return savedMode;
     }
-    return 'system';
+    return 'light';
   });
 
   const [systemIsDark, setSystemIsDark] = useState(() => 

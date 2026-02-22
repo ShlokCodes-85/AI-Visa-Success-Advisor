@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { FiCamera, FiUser, FiMail, FiCalendar } from "react-icons/fi";
 
 export default function Profile({ user, onClose, onPhotoChange }) {
   const [photo, setPhoto] = useState(() => localStorage.getItem("profilePhoto"));
   const [isUploading, setIsUploading] = useState(false);
+
+  // Prevent scrolling when modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
 
   const handlePhotoChange = async (event) => {
     const file = event.target.files[0];
@@ -34,7 +42,7 @@ export default function Profile({ user, onClose, onPhotoChange }) {
         // Save to backend
         try {
           const token = localStorage.getItem("token");
-          const BACKEND_URL = "https://ai-visa-success-advisor.onrender.com";
+          const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
           const response = await fetch(`${BACKEND_URL}/api/auth/profile-photo`, {
             method: "PUT",
             headers: {
@@ -74,7 +82,8 @@ export default function Profile({ user, onClose, onPhotoChange }) {
     // Remove from backend
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`https://ai-visa-success-advisor.onrender.com/api/auth/profile-photo`, {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+      const response = await fetch(`${BACKEND_URL}/api/auth/profile-photo`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,
