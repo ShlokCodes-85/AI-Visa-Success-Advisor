@@ -168,7 +168,7 @@ router.get(
       );
 
       // Redirect to frontend with token
-      res.redirect(`${process.env.CLIENT_URL}/oauth/success?token=${token}`);
+      res.redirect(`${process.env.CLIENT_URL}/?token=${token}`);
     } catch (error) {
       console.error("Google OAuth callback error:", error);
       res.redirect(`${process.env.CLIENT_URL}/?error=token_generation_failed`);
@@ -198,7 +198,7 @@ router.get(
       );
 
       // Redirect to frontend with token
-      res.redirect(`${process.env.CLIENT_URL}/oauth/success?token=${token}`);
+      res.redirect(`${process.env.CLIENT_URL}/?token=${token}`);
     } catch (error) {
       console.error("GitHub OAuth callback error:", error);
       res.redirect(`${process.env.CLIENT_URL}/?error=token_generation_failed`);

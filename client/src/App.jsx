@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { useEffect } from "react";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "./components/NavBar";
 import Hero from "./components/Hero";
 import Features from "./components/Features";
@@ -10,6 +11,30 @@ import OAuthSuccess from "./pages/OAuthSuccess";
 import ResetPassword from "./pages/ResetPassword";
 import ApplicationForm from "./pages/FormMode/ApplicationForm";
 import { ApplicationProvider } from "./contexts/ApplicationContext";
+
+function OAuthQueryHandler() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+    const error = params.get("error");
+
+    if (error) {
+      alert("OAuth authentication failed. Please try again.");
+      navigate("/", { replace: true });
+      return;
+    }
+
+    if (token) {
+      localStorage.setItem("token", token);
+      navigate("/application", { replace: true });
+    }
+  }, [location.search, navigate]);
+
+  return null;
+}
 
 
 function ProtectedRoute({ children }) {
@@ -23,6 +48,7 @@ function ProtectedRoute({ children }) {
 function App() {
   return (
     <ApplicationProvider>
+      <OAuthQueryHandler />
       <Routes>
         <Route path="/oauth/success" element={<OAuthSuccess />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
