@@ -152,8 +152,9 @@ export default function ChatContent({
         hasApplicationData: !!applicationData,
       });
       
-      // TODO: Update with Python backend URL when deployed
-      const response = await fetch(`http://localhost:8000/api/chat/message`, {
+      // Use backend URL from environment variable
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+      const response = await fetch(`${BACKEND_URL}/api/chat/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

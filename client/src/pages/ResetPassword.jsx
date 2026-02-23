@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { MdClose } from "react-icons/md";
 import { FaCheck } from "react-icons/fa";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
 
 export default function ResetPassword() {
   const { token } = useParams();

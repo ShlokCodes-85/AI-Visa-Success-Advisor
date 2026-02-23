@@ -29,7 +29,8 @@ function OAuthQueryHandler() {
 
     if (token) {
       localStorage.setItem("token", token);
-      navigate("/application", { replace: true });
+      // Hard redirect to ensure ProtectedRoute sees the token
+      window.location.href = "/application";
     }
   }, [location.search, navigate]);
 
