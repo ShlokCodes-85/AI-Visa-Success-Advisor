@@ -26,10 +26,7 @@ app.use(
   cors({
     origin: function (origin, callback) {
       const allowedOrigins = [
-        process.env.CLIENT_URL,
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "https://ai-visa-success-advisor-96dg.vercel.app"
+        process.env.CLIENT_URL
       ];
       
       if (!origin || allowedOrigins.includes(origin)) {
