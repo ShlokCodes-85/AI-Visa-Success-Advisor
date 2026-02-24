@@ -125,9 +125,11 @@ export default function StatementOfPurpose({ formData, handleInputChange, errors
           onChange={handleInputChange}
           placeholder="Write your statement of purpose here..."
           rows={12}
-          className={`w-full px-4 py-3 border ${
-            errors.sopText ? "border-red-500" : "border-transparent dark:border-gray-600"
-          } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none placeholder-gray-500 dark:placeholder-gray-400`}
+          className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none placeholder-gray-500 dark:placeholder-gray-400
+            ${errors.sopText
+              ? "border-red-500 focus:border-red-500"
+              : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
+          `}
         />
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Minimum 250 words recommended</p>
       </div>

@@ -57,9 +57,11 @@ export default function ExamInfo({ formData, setFormData, errors = {} }) {
             name="visaDestinationCountry"
             value={formData.visaDestinationCountry || ""}
             onChange={handleChange}
-            className={`w-full px-4 py-3 border ${
-              errors.visaDestinationCountry ? "border-red-500" : "border-transparent dark:border-gray-600"
-            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+            className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+              ${errors.visaDestinationCountry
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
+            `}
           >
             <option value="">Select a country</option>
             {countries.map((countryName) => (
@@ -93,9 +95,12 @@ export default function ExamInfo({ formData, setFormData, errors = {} }) {
             value={formData.examType || ""}
             onChange={handleChange}
             disabled={!country}
-            className={`w-full px-4 py-3 border ${
-              errors.examType ? "border-red-500" : "border-transparent dark:border-gray-600"
-            } ${!country ? "bg-gray-100 dark:bg-gray-700 cursor-not-allowed" : "bg-white dark:bg-gray-800"} text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+            className={`w-full px-4 py-3 border rounded-lg text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+              ${!country ? "bg-gray-100 dark:bg-gray-700 cursor-not-allowed" : "bg-white dark:bg-gray-800"}
+              ${errors.examType
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
+            `}
           >
             <option value="">{!country ? "Select country first" : "Select Exam"}</option>
             {exams.map((exam) => (

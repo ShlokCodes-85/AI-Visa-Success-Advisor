@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import DevBypassProtectedRoute from "./DevBypassProtectedRoute";
 import Navbar from "./components/NavBar";
 import Hero from "./components/Hero";
 import Features from "./components/Features";
@@ -56,9 +57,17 @@ function App() {
         <Route
           path="/application"
           element={
-            <ProtectedRoute>
-              <ApplicationForm />
-            </ProtectedRoute>
+            window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+              ? (
+                  <DevBypassProtectedRoute>
+                    <ApplicationForm />
+                  </DevBypassProtectedRoute>
+                )
+              : (
+                  <ProtectedRoute>
+                    <ApplicationForm />
+                  </ProtectedRoute>
+                )
           }
         />
         <Route

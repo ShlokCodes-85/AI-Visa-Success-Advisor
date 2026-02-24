@@ -26,9 +26,11 @@ export default function EducationBackground({ formData, handleInputChange, error
             name="educationLevel"
             value={formData.educationLevel}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border ${
-              errors.educationLevel ? "border-red-500" : "border-transparent dark:border-gray-600"
-            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+            className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+              ${errors.educationLevel
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
+            `}
           >
             <option value="">Select education level</option>
             <option value="High School">High School</option>
@@ -65,9 +67,11 @@ export default function EducationBackground({ formData, handleInputChange, error
             name="graduationYear"
             value={formData.graduationYear}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border ${
-              errors.graduationYear ? "border-red-500" : "border-transparent dark:border-gray-600"
-            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+            className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+              ${errors.graduationYear
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
+            `}
           >
             <option value="">Select graduation year</option>
             {years.map((year) => (
@@ -87,9 +91,11 @@ export default function EducationBackground({ formData, handleInputChange, error
             name="gpaScale"
             value={formData.gpaScale || ""}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border ${
-              errors.gpaScale ? "border-red-500" : "border-transparent dark:border-gray-600"
-            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+            className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+              ${errors.gpaScale
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
+            `}
           >
             <option value="">Select Scale</option>
             {gpaScales.map((scale) => (

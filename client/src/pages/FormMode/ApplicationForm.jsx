@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { FiEdit, FiMessageCircle } from "react-icons/fi";
+
 import AppNavBar from "../../components/AppNavBar";
 import ChatContent from "../ChatMode/ChatContent";
 import ChatSidebar from "../ChatMode/ChatSidebar";
@@ -28,7 +30,9 @@ export default function ApplicationForm() {
   const [formData, setFormData] = useState({
     fullName: "",
     dateOfBirth: "",
+    gender: "",
     nationality: "",
+    countryOfResidency: "",
     contactEmail: "",
     phoneNumber: "",
     educationLevel: "",
@@ -398,12 +402,57 @@ export default function ApplicationForm() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Common NavBar */}
-      <AppNavBar mode={mode} setMode={setMode} />
+      <AppNavBar 
+        mode={mode} 
+        setMode={setMode} 
+        setCurrentSection={setCurrentSection} 
+        currentSection={currentSection} 
+        completedSections={completedSections}
+        chats={chats}
+        setChats={setChats}
+        activeChat={activeChat}
+        setActiveChat={setActiveChat}
+        editingId={editingId}
+        setEditingId={setEditingId}
+        editTitle={editTitle}
+        setEditTitle={setEditTitle}
+      />
+
+      {/* Mobile-only segmented mode switch button (always visible on mobile) */}
+      <div className="block sm:hidden mb-4 px-4 pt-4">
+        <div className="flex bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full p-1 shadow-sm w-full">
+          <button
+            onClick={() => mode !== "form" && setMode("form")}
+            className={`flex items-center justify-center gap-1 w-1/2 px-2 py-2 rounded-full text-xs font-medium transition-all focus:outline-none
+              ${mode === "form"
+                ? "bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow"
+                : "bg-transparent text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"}
+            `}
+            aria-label="Switch to Form Mode"
+          >
+            <FiEdit className={`mr-1 ${mode === "form" ? "text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-gray-300"}`} size={16} />
+            <span>Form</span>
+          </button>
+          <button
+            onClick={() => mode !== "chat" && setMode("chat")}
+            className={`flex items-center justify-center gap-1 w-1/2 px-2 py-2 rounded-full text-xs font-medium transition-all focus:outline-none
+              ${mode === "chat"
+                ? "bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow"
+                : "bg-transparent text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"}
+            `}
+            aria-label="Switch to Chat Mode"
+          >
+            <FiMessageCircle className={`mr-1 ${mode === "chat" ? "text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-gray-300"}`} size={16} />
+            <span>Chat</span>
+          </button>
+        </div>
+      </div>
 
       {/* Conditional Content Based on Mode */}
       {mode === "chat" ? (
-        <div className="flex h-[calc(100vh-56px)] sm:h-[calc(100vh-64px)] flex-col lg:flex-row">
-          <div className="hidden lg:block w-64 xl:w-80 flex-shrink-0">
+        <div className="flex flex-col lg:flex-row h-[calc(100vh-120px)] sm:h-[calc(100vh-64px)] w-full">
+          {/* Sidebar: visible only on desktop in chat mode */}
+          <div className="hidden lg:block w-64 xl:w-80 flex-shrink-0 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" style={{ minHeight: 0, maxHeight: '100%' }}>
             <ChatSidebar 
               chats={chats}
               setChats={setChats}
@@ -433,30 +482,34 @@ export default function ApplicationForm() {
             completedSections={completedSections}
           />
 
-          <div className="lg:col-span-3 bg-white dark:bg-gray-900 rounded-lg sm:rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
-            {renderSection()}
+          <div className="lg:col-span-3 flex flex-col">
+            <div id="form-section-content" className="bg-white dark:bg-gray-900 rounded-lg sm:rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 flex-1">
+              {renderSection()}
 
-            <div className="mt-6 sm:mt-8 flex flex-col xs:flex-row justify-between gap-3 pt-6 sm:pt-8 border-t border-gray-200 dark:border-gray-700">
-              <button
-                onClick={() => setCurrentSection(Math.max(1, currentSection - 1))}
-                disabled={currentSection === 1}
-                className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg border border-transparent dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-gray-100 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 text-sm sm:text-base min-h-[44px] sm:min-h-[auto]"
-              >
-                Previous
-              </button>
+              <div className="mt-6 sm:mt-8 flex flex-row justify-between items-end gap-3 pt-6 sm:pt-8 border-t border-gray-200 dark:border-gray-700 relative min-h-[60px]">
+                <button
+                  onClick={() => setCurrentSection(Math.max(1, currentSection - 1))}
+                  disabled={currentSection === 1}
+                  className="absolute left-0 bottom-0 px-6 py-2 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-gray-100 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 text-sm shadow-sm transition-all"
+                  style={{ minWidth: '110px' }}
+                >
+                  Previous
+                </button>
 
-              <button
-                onClick={() => {
-                  if (validateSection(currentSection)) {
-                    setErrors({});
-                    markSectionComplete(currentSection);
-                    if (currentSection < 8) setCurrentSection(currentSection + 1);
-                  }
-                }}
-                className="px-6 sm:px-8 py-2 sm:py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 text-sm sm:text-base min-h-[44px] sm:min-h-[auto]"
-              >
-                {currentSection === 8 ? "Submit Form" : "Save and Continue"}
-              </button>
+                <button
+                  onClick={() => {
+                    if (validateSection(currentSection)) {
+                      setErrors({});
+                      markSectionComplete(currentSection);
+                      if (currentSection < 8) setCurrentSection(currentSection + 1);
+                    }
+                  }}
+                  className="absolute right-0 bottom-0 px-8 py-2 rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 text-sm shadow-sm transition-all"
+                  style={{ minWidth: '160px' }}
+                >
+                  {currentSection === 8 ? "Submit Form" : "Save and Continue"}
+                </button>
+              </div>
             </div>
           </div>
         </div>

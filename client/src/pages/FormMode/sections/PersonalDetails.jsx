@@ -80,9 +80,11 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             name="gender"
             value={formData.gender || ''}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border ${
-              errors.gender ? "border-red-500" : "border-transparent dark:border-gray-600"
-            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+            className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+              ${errors.gender
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
+            `}
           >
             <option value="">Select your gender</option>
             <option value="Male">Male</option>
@@ -120,9 +122,11 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             name="nationality"
             value={formData.nationality}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border ${
-              errors.nationality ? "border-red-500" : "border-transparent dark:border-gray-600"
-            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+            className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+              ${errors.nationality
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
+            `}
           >
             <option value="">Select your nationality</option>
             {countries.map((country) => (
@@ -141,9 +145,11 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             name="countryOfResidency"
             value={formData.countryOfResidency || ''}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border ${
-              errors.countryOfResidency ? "border-red-500" : "border-transparent dark:border-gray-600"
-            } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all`}
+            className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+              ${errors.countryOfResidency
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
+            `}
           >
             <option value="">Select country of residency</option>
             {countries.map((country) => (

@@ -156,6 +156,7 @@ export default function ChatSidebar({
     <div className="h-full bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col">
       {/* Sidebar Header */}
       <div className="p-2 sm:p-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        {/* New Chat Button */}
         <button
           onClick={handleCreateNewChat}
           className="w-full flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 sm:py-2.5 bg-blue-400 text-white rounded-3xl hover:bg-blue-500 transition-colors font-medium shadow-sm text-xs sm:text-sm min-h-[44px] sm:min-h-[auto]"

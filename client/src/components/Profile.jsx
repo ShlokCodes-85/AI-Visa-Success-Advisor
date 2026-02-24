@@ -3,6 +3,22 @@ import { IoClose } from "react-icons/io5";
 import { FiCamera, FiUser, FiMail, FiCalendar } from "react-icons/fi";
 
 export default function Profile({ user, onClose, onPhotoChange }) {
+  if (!user) {
+    return (
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-2xl dark:shadow-gray-900/50 relative flex flex-col items-center justify-center">
+          <h2 className="text-xl font-bold text-center text-gray-900 dark:text-white mb-5">Profile</h2>
+          <p className="text-gray-500 dark:text-gray-300 mb-4">User information is not available.</p>
+          <button
+            onClick={onClose}
+            className="w-full mt-5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all text-sm"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
   const [photo, setPhoto] = useState(() => localStorage.getItem("profilePhoto"));
   const [isUploading, setIsUploading] = useState(false);
 

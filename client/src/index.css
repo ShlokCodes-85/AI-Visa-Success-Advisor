@@ -1,3 +1,64 @@
+/* Application Sidebar custom scrollbar: white bg, light blue thumb in light mode */
+.application-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+.application-sidebar::-webkit-scrollbar-track {
+  background: #fff;
+}
+.application-sidebar::-webkit-scrollbar-thumb {
+  background: #60a5fa; /* Tailwind blue-400 */
+  border-radius: 6px;
+}
+html.dark .application-sidebar::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+html.dark .application-sidebar::-webkit-scrollbar-thumb {
+  background: #1d4ed8; /* Tailwind blue-700 */
+}
+html.dark .application-sidebar {
+  scrollbar-color: #1d4ed8 #1e293b;
+  scrollbar-width: thin;
+}
+/* Firefox (light mode) */
+.application-sidebar {
+  scrollbar-color: #60a5fa #fff;
+  scrollbar-width: thin;
+}
+/* Custom scrollbar for Application Sidebar */
+/* Application Sidebar custom scrollbar: white bg, light blue thumb in light mode */
+.application-sidebar::-webkit-scrollbar {
+  width: 8px;
+  background: #fff;
+}
+.application-sidebar::-webkit-scrollbar-thumb {
+  background: #60a5fa; /* Tailwind blue-400 */
+  border-radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  .application-sidebar::-webkit-scrollbar {
+    background: #1e293b;
+  }
+  .application-sidebar::-webkit-scrollbar-thumb {
+    background: #334155;
+  }
+}
+/* Unify border styling for all form fields in both color schemes */
+input, select, textarea {
+  border: 1.5px solid #d1d5db;
+  background-color: #fff;
+  color: #213547;
+  border-radius: 6px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+@media (prefers-color-scheme: dark) {
+  input, select, textarea {
+    border: 1.5px solid #374151;
+    background-color: #1f2937;
+    color: #f3f4f6;
+  }
+}
+/* Ensure Tailwind border utility classes are always visible */
 :root {
   font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", serif;
   line-height: 1.5;
