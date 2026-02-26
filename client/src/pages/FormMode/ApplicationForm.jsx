@@ -85,7 +85,7 @@ export default function ApplicationForm() {
       }
 
       try {
-        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
         const response = await fetch(`${BACKEND_URL}/api/chats`, {
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -138,7 +138,7 @@ export default function ApplicationForm() {
 
       console.log("Loading messages for chat:", activeChat);
       try {
-        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
         const response = await fetch(`${BACKEND_URL}/api/chats/${activeChat}`, {
           headers: {
             "Authorization": `Bearer ${token}`,

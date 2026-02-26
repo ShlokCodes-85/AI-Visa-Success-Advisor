@@ -40,17 +40,16 @@ function FAQ() {
           {faqs.map((item, idx) => {
             const isOpen = openIndex === idx;
             return (
-              <div key={item.q} className={`rounded-lg bg-white dark:bg-gray-800 shadow-sm dark:shadow-gray-900/50 transition-all duration-200 ${
-                isOpen 
-                  ? 'border-2 border-blue-600 dark:border-blue-500 shadow-md dark:shadow-blue-900/30' 
-                  : 'border border-gray-200 dark:border-gray-700'
-              }`}>
-                <button
-                  onClick={() => setOpenIndex(isOpen ? -1 : idx)}
-                  className={`bg-white dark:bg-gray-800 w-full flex items-center justify-between text-left px-3 sm:px-4 lg:px-6 py-3 sm:py-4 focus:outline-none transition-colors min-h-[44px] sm:min-h-[50px] ${
-                    isOpen ? '' : 'hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
-                >
+              <button
+                key={item.q}
+                onClick={() => setOpenIndex(isOpen ? -1 : idx)}
+                className={`w-full text-left rounded-lg bg-white dark:bg-gray-800 shadow-sm dark:shadow-gray-900/50 transition-all duration-200 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 focus:outline-none min-h-[44px] sm:min-h-[50px] ${
+                  isOpen 
+                    ? 'border-2 border-blue-600 dark:border-blue-500 shadow-md dark:shadow-blue-900/30' 
+                    : 'border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                <div className="flex items-center justify-between">
                   <div className="pr-2 sm:pr-4 flex-1">
                     <h3 className="text-sm xs:text-base sm:text-lg font-semibold text-gray-900 dark:text-white leading-snug">
                       {item.q}
@@ -60,13 +59,13 @@ function FAQ() {
                     size={20}
                     className={`text-gray-500 dark:text-gray-400 transition-transform duration-200 flex-shrink-0 ${isOpen ? "rotate-180" : "rotate-0"}`}
                   />
-                </button>
+                </div>
                 {isOpen && (
-                  <div className="px-3 sm:px-4 lg:px-6 pb-3 sm:pb-4 lg:pb-5 text-xs xs:text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed border-t border-gray-200 dark:border-gray-700">
+                  <div className="pt-2 sm:pt-3 text-xs xs:text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed">
                     {item.a}
                   </div>
                 )}
-              </div>
+              </button>
             );
           })}
         </div>

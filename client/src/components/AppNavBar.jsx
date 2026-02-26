@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiMenu, FiLogOut, FiEdit, FiMessageCircle, FiPlus, FiEdit2, FiTrash2, FiMessageSquare } from "react-icons/fi";
-import { VscHome, VscAccount, VscSettingsGear } from "react-icons/vsc";
+import { VscAccount, VscSettingsGear } from "react-icons/vsc";
 import ThemeToggle from "./ThemeToggle";
 import Profile from "./Profile";
 import Dock from "./Dock";
@@ -43,7 +43,7 @@ export default function AppNavBar({
       }
 
       try {
-        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
         const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -134,7 +134,8 @@ export default function AppNavBar({
     }
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
+      const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || (isLocalhost ? "http://localhost:5000" : "https://ai-visa-success-advisor.onrender.com");
       const response = await fetch(`${BACKEND_URL}/api/chats`, {
         method: "POST",
         headers: {
@@ -180,7 +181,8 @@ export default function AppNavBar({
     }
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
+      const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || (isLocalhost ? "http://localhost:5000" : "https://ai-visa-success-advisor.onrender.com");
       const response = await fetch(`${BACKEND_URL}/api/chats/${chatId}`, {
         method: "DELETE",
         headers: {
@@ -221,7 +223,8 @@ export default function AppNavBar({
     }
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
+      const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || (isLocalhost ? "http://localhost:5000" : "https://ai-visa-success-advisor.onrender.com");
       const response = await fetch(`${BACKEND_URL}/api/chats/${chatId}`, {
         method: "PUT",
         headers: {
@@ -288,7 +291,7 @@ export default function AppNavBar({
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center gap-2 sm:gap-4 relative">
         {/* Hamburger for mobile */}
-        <button className="lg:hidden flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-gray-200 focus:outline-none" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
+        <button className="lg:hidden flex items-center justify-center p-2 rounded-lg bg-transparent text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
           <FiMenu className="w-6 h-6" />
         </button>
         {/* Title - on left for desktop, centered for mobile */}
@@ -358,7 +361,6 @@ export default function AppNavBar({
                 )}
                 <Dock
                   items={[
-                    { icon: <VscHome size={16} />, label: 'Home', onClick: () => window.location.href = '/' },
                     { icon: <VscAccount size={16} />, label: 'Profile', onClick: handleProfileClick },
                     { icon: <VscSettingsGear size={16} />, label: 'Settings', onClick: () => alert('Settings coming soon!') },
                     {
@@ -391,43 +393,7 @@ export default function AppNavBar({
         <div className="bg-black/40 w-full h-full lg:hidden" onClick={() => setSidebarOpen(false)} />
         {/* Sidebar on the left, only on mobile */}
         <nav className="bg-white dark:bg-gray-900 w-64 max-w-full h-full shadow-lg p-6 flex flex-col gap-4 fixed left-0 top-0 z-50 lg:hidden">
-          <button className="self-end mb-4 text-gray-700 dark:text-gray-200" onClick={() => setSidebarOpen(false)} aria-label="Close menu">✕</button>
-          
-          {/* Mode Toggle for Mobile - only show in form mode */}
-          {mode === "form" && (
-            <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full p-1 shadow-sm mb-2">
-              <button
-                onClick={() => {
-                  setMode("form");
-                  setSidebarOpen(false);
-                }}
-                className={`flex items-center justify-center gap-1 px-3 py-2 rounded-full text-xs font-medium transition-all focus:outline-none w-1/2
-                  ${mode === "form"
-                    ? "bg-blue-500 text-white shadow-md"
-                    : "bg-white dark:bg-gray-700 text-black dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"}
-                `}
-                aria-label="Switch to Form Mode"
-              >
-                <FiEdit className={`${mode === "form" ? "text-white" : "text-gray-600 dark:text-gray-400"}`} size={14} />
-                <span>Form</span>
-              </button>
-              <button
-                onClick={() => {
-                  setMode("chat");
-                  setSidebarOpen(false);
-                }}
-                className={`flex items-center justify-center gap-1 px-3 py-2 rounded-full text-xs font-medium transition-all focus:outline-none w-1/2
-                  ${mode === "chat"
-                    ? "bg-blue-500 text-white shadow-md"
-                    : "bg-white dark:bg-gray-700 text-black dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"}
-                `}
-                aria-label="Switch to Chat Mode"
-              >
-                <FiMessageCircle className={`${mode === "chat" ? "text-white" : "text-gray-600 dark:text-gray-400"}`} size={14} />
-                <span>Chat</span>
-              </button>
-            </div>
-          )}
+          <button className="self-end mb-4 bg-transparent text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-2xl font-light" onClick={() => setSidebarOpen(false)} aria-label="Close menu">✕</button>
           
           {/* Conditional Content: Form Sections or Chat Controls */}
           {mode === "form" ? (

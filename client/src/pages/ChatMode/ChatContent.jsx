@@ -32,7 +32,7 @@ export default function ChatContent({
     if (!token || !activeChat) return;
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${BACKEND_URL}/api/chats/${activeChat}/messages`, {
         method: "POST",
         headers: {
@@ -153,8 +153,8 @@ export default function ChatContent({
       });
       
       // Use backend URL from environment variable
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
-      const response = await fetch(`${BACKEND_URL}/api/chat/message`, {
+      const AI_BACKEND_URL = import.meta.env.VITE_AI_BACKEND_URL;
+      const response = await fetch(`${AI_BACKEND_URL}/api/chat/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

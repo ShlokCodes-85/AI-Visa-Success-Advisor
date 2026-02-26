@@ -21,7 +21,7 @@ export default function ChatSidebar({
     }
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${BACKEND_URL}/api/chats`, {
         method: "POST",
         headers: {
@@ -68,7 +68,7 @@ export default function ChatSidebar({
     }
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${BACKEND_URL}/api/chats/${pendingDeleteChat.id}`, {
         method: "DELETE",
         headers: {
@@ -114,7 +114,7 @@ export default function ChatSidebar({
     }
 
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://ai-visa-success-advisor.onrender.com";
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${BACKEND_URL}/api/chats/${chatId}`, {
         method: "PUT",
         headers: {

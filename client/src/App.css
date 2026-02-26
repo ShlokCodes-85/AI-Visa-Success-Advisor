@@ -65,10 +65,10 @@ html.dark {
 }
 
 .dock-outer {
-  margin: 0 1.5rem 0 1.5rem; /* Shift dock bar right */
   display: flex;
   max-width: 100%;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .dock-panel {
@@ -86,23 +86,6 @@ html.dark {
   opacity: 0;
   transform: translateY(10px);
   animation: dock-fade-in 0.22s cubic-bezier(.4,1.4,.6,1) forwards;
-}
-
-.dock-panel::before {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(435%);
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid var(--dock-bg);
-  z-index: 2;
-}
-html.dark .dock-panel::before {
-  border-bottom: 10px solid var(--dock-bg);
 }
 
 @keyframes dock-fade-in {
@@ -156,7 +139,6 @@ html.dark .dock-item.dock-logout:hover {
   padding: 0;
 }
 .dock-item:hover {
-  background: #e0e7ef;
   border: 1.5px solid #2563eb;
   box-shadow: 0 2px 8px rgba(37,99,235,0.08);
 }
@@ -166,7 +148,6 @@ html.dark .dock-item {
   color: #e0e7ef;
 }
 html.dark .dock-item:hover {
-  background: #22304a;
   border: 1.5px solid #60a5fa;
   color: #fff;
 }
@@ -336,10 +317,6 @@ button {
   transition: all 0.3s ease;
 }
 
-button:hover {
-  background-color: #f3f4f6;
-}
-
 button:active {
   transform: scale(0.98);
 }
@@ -453,7 +430,6 @@ button:active {
   }
 
   button:hover {
-    background-color: #f0f0f0;
     transform: translateY(-2px);
   }
 }
@@ -479,10 +455,6 @@ button:active {
     background: #1f2937;
     color: #f3f4f6;
     border-color: #4b5563;
-  }
-
-  button:hover {
-    background-color: #374151;
   }
 }
 
@@ -524,10 +496,6 @@ button:active {
 
   .feature-card {
     padding: 1.25rem;
-  }
-
-  button:active {
-    background-color: #e5e7eb;
   }
 }
 

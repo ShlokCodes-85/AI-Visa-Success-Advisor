@@ -26,7 +26,7 @@ class Settings:
     FORM_LLM_MODEL = os.getenv("FORM_LLM_MODEL", "gpt-3.5-turbo")
     
     # Node.js Backend
-    NODE_BACKEND_URL = os.getenv("NODE_BACKEND_URL", "http://localhost:5000")
+    NODE_BACKEND_URL = os.getenv("NODE_BACKEND_URL", os.getenv("NODE_BACKEND_URL_LOCAL", "http://localhost:5000"))
     
     # CORS
     ALLOWED_ORIGINS = [
