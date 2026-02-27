@@ -4,12 +4,20 @@ import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Initialize Gemini client
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 // Send message to AI and get response
 router.post("/message", protect, async (req, res) => {
   try {
+    // Initialize Gemini client inside the handler to ensure env vars are loaded
+    if (!process.env.GEMINI_API_KEY) {
+      console.error("[AI CHAT] GEMINI_API_KEY not found in environment variables");
+      return res.status(500).json({ 
+        success: false,
+        error: "Gemini API key is not configured. Please set GEMINI_API_KEY environment variable." 
+      });
+    }
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    
     console.log("[AI CHAT] Route hit - processing message");
     console.log("[AI CHAT] User:", req.user);
     console.log("[AI CHAT] Request body:", req.body);
@@ -72,15 +80,25 @@ Be professional, empathetic, encouraging, and thorough. Provide specific, action
     // Combine system context with user message and documents
     const fullPrompt = `${systemContext}\n${documentAnalysisPrompt}\n\nUser Question: ${message}\n\nProvide a comprehensive response addressing the user's question${documents && documents.length > 0 ? ' and analyzing the uploaded documents in detail' : ''}.`;
 
+    console.log("[AI CHAT] Full prompt length:", fullPrompt.length);
+    console.log("[AI CHAT] Model:", process.env.CHAT_LLM_MODEL || "gemini-1.5-pro");
+
     // Get Gemini model
     const model = genAI.getGenerativeModel({ 
       model: process.env.CHAT_LLM_MODEL || "gemini-1.5-pro" 
     });
 
+    console.log("[AI CHAT] Model initialized, calling generateContent...");
+
     // Generate response
     const result = await model.generateContent(fullPrompt);
+    console.log("[AI CHAT] Got result from generateContent");
+    
     const response = await result.response;
+    console.log("[AI CHAT] Got response object");
+    
     const aiResponse = response.text();
+    console.log("[AI CHAT] Got text from response, length:", aiResponse.length);
 
     console.log(`[AI CHAT] Generated response for user ${req.user.id}`);
 
@@ -91,18 +109,27 @@ Be professional, empathetic, encouraging, and thorough. Provide specific, action
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("[AI CHAT ERROR]:", error);
-    console.error("[AI CHAT ERROR] Full error:", JSON.stringify(error, null, 2));
+    console.error("[AI CHAT ERROR] Caught error:", error);
+    console.error("[AI CHAT ERROR] Error type:", error.constructor.name);
     console.error("[AI CHAT ERROR] Error message:", error.message);
-    console.error("[AI CHAT ERROR] Error stack:", error.stack);
     
-    if (error.message?.includes("API key") || error.message?.includes("API_KEY")) {
+    if (error.message?.includes("API key") || error.message?.includes("API_KEY") || error.message?.includes("401")) {
+      console.error("[AI CHAT ERROR] API key issue detected");
       return res.status(500).json({ 
         success: false,
         error: "Gemini API key is invalid or missing. Please configure GEMINI_API_KEY." 
       });
     }
+
+    if (error.message?.includes("Resource")) {
+      console.error("[AI CHAT ERROR] Resource error - possibly blocked request");
+      return res.status(500).json({
+        success: false,
+        error: "Request was blocked or resource not available. This may be a safety filter issue."
+      });
+    }
     
+    console.error("[AI CHAT ERROR] Error stack:", error.stack);
     res.status(500).json({ 
       success: false,
       error: `Error processing message: ${error.message || 'Unknown error'}` 
