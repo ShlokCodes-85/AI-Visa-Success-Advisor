@@ -137,6 +137,7 @@ html.dark .dock-item.dock-logout:hover {
   width: 38px !important;
   height: 38px !important;
   padding: 0;
+  color: #1f2937;
 }
 .dock-item:hover {
   border: 1.5px solid #2563eb;

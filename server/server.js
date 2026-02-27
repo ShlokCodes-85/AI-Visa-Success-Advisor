@@ -7,6 +7,7 @@ import passport from "passport";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
 import chatRoutes from "./routes/chats.js";
+import aiChatRoutes from "./routes/ai-chat.js";
 import applicationRoutes from "./routes/applications.js";
 import subscriptionRoutes from "./routes/subscriptions.js";
 import analysisRoutes from "./routes/analyses.js";
@@ -121,6 +122,7 @@ connectDB().catch((err) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/chats", chatRoutes);
+app.use("/api/chat", aiChatRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/analyses", analysisRoutes);
