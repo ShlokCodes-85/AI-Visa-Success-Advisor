@@ -10,6 +10,10 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // Send message to AI and get response
 router.post("/message", protect, async (req, res) => {
   try {
+    console.log("[AI CHAT] Route hit - processing message");
+    console.log("[AI CHAT] User:", req.user);
+    console.log("[AI CHAT] Request body:", req.body);
+    
     const { message, documents, applicationData } = req.body;
 
     if (!message || message.trim() === "") {
