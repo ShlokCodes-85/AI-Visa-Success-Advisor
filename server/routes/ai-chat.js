@@ -88,8 +88,11 @@ Be professional, empathetic, encouraging, and thorough. Provide specific, action
     });
   } catch (error) {
     console.error("[AI CHAT ERROR]:", error);
+    console.error("[AI CHAT ERROR] Full error:", JSON.stringify(error, null, 2));
+    console.error("[AI CHAT ERROR] Error message:", error.message);
+    console.error("[AI CHAT ERROR] Error stack:", error.stack);
     
-    if (error.message?.includes("API key")) {
+    if (error.message?.includes("API key") || error.message?.includes("API_KEY")) {
       return res.status(500).json({ 
         success: false,
         error: "Gemini API key is invalid or missing. Please configure GEMINI_API_KEY." 
@@ -98,7 +101,7 @@ Be professional, empathetic, encouraging, and thorough. Provide specific, action
     
     res.status(500).json({ 
       success: false,
-      error: `Error processing message: ${error.message}` 
+      error: `Error processing message: ${error.message || 'Unknown error'}` 
     });
   }
 });
