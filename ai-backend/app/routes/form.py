@@ -5,7 +5,10 @@ Routes for form-specific LLM operations
 from fastapi import APIRouter, HTTPException, status, Header
 from typing import Optional
 from pydantic import BaseModel
+from datetime import datetime
 from app.services.form_llm_service import form_llm_service
+from app.services.form_analysis_db import form_analysis_db
+from app.models.form_analysis import FormAnalysisRequest, FormAnalysisResponse, FormAnalysisListResponse
 
 router = APIRouter(prefix="/api/form", tags=["form"])
 
@@ -22,11 +25,6 @@ class FormValidationRequest(BaseModel):
     field_name: str
     user_response: str
     field_requirements: Optional[str] = None
-
-
-class FormAnalysisRequest(BaseModel):
-    """Request model for full application analysis"""
-    form_data: dict
 
 
 @router.post("/guidance")
@@ -112,29 +110,40 @@ async def validate_form_response(
 async def analyze_application(
     request: FormAnalysisRequest,
     x_user_id: str = Header(..., alias="X-User-Id"),
-) -> dict:
+) -> FormAnalysisResponse:
     """
-    Analyze a full form submission and return structured results.
+    Analyze a full form submission and save results to MongoDB.
 
     Headers:
         X-User-Id: ID of the authenticated user
     """
     try:
-        if not request.form_data:
+        if not request.form_data or not request.email:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="form_data is required"
+                detail="form_data and email are required"
             )
 
         analysis = await form_llm_service.analyze_application(
             form_data=request.form_data,
         )
 
-        return {
-            "success": True,
-            "user_id": x_user_id,
-            "analysis": analysis,
-        }
+        # Save analysis to MongoDB
+        analysis_id = await form_analysis_db.save_analysis(
+            email=request.email,
+            form_data=request.form_data,
+            analysis_results=analysis,
+            user_id=x_user_id,
+        )
+
+        return FormAnalysisResponse(
+            success=True,
+            analysis_id=analysis_id,
+            email=request.email,
+            form_data=request.form_data,
+            analysis_results=analysis,
+            timestamp=datetime.utcnow(),
+        )
 
     except HTTPException:
         raise
@@ -142,6 +151,68 @@ async def analyze_application(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error generating analysis: {str(e)}"
+        )
+
+
+@router.get("/analyses/{email}")
+async def get_user_analyses(
+    email: str,
+    x_user_id: str = Header(..., alias="X-User-Id"),
+) -> FormAnalysisListResponse:
+    """
+    Retrieve all analyses for a specific email.
+    
+    Headers:
+        X-User-Id: ID of the authenticated user
+    """
+    try:
+        analyses = await form_analysis_db.get_analyses_by_email(email)
+        
+        return FormAnalysisListResponse(
+            success=True,
+            email=email,
+            count=len(analyses),
+            analyses=analyses,
+        )
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving analyses: {str(e)}"
+        )
+
+
+@router.get("/analysis/{analysis_id}")
+async def get_analysis(
+    analysis_id: str,
+    x_user_id: str = Header(..., alias="X-User-Id"),
+) -> dict:
+    """
+    Retrieve a specific analysis by ID.
+    
+    Headers:
+        X-User-Id: ID of the authenticated user
+    """
+    try:
+        analysis = await form_analysis_db.get_analysis_by_id(analysis_id)
+        
+        if not analysis:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Analysis not found"
+            )
+        
+        return {
+            "success": True,
+            "analysis": analysis,
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving analysis: {str(e)}"
         )
 
 

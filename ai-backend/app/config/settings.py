@@ -28,12 +28,12 @@ class Settings:
     # Node.js Backend
     NODE_BACKEND_URL = os.getenv("NODE_BACKEND_URL", os.getenv("NODE_BACKEND_URL_LOCAL", "http://localhost:5000"))
     
-    # CORS
-    ALLOWED_ORIGINS = [
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "http://localhost:5000",
-    ]
+    # CORS - Load from environment, with development defaults
+    _allowed_origins_str = os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:5173,http://localhost:3000,http://localhost:5000"
+    )
+    ALLOWED_ORIGINS = [origin.strip() for origin in _allowed_origins_str.split(",")]
     
     # Chat Configuration
     MAX_CHAT_HISTORY = 50
