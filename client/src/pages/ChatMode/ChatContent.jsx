@@ -153,13 +153,13 @@ export default function ChatContent({
       });
       
       // Use backend URL from environment variable
-      const AI_BACKEND_URL = import.meta.env.VITE_AI_BACKEND_URL;
-      const response = await fetch(`${AI_BACKEND_URL}/api/chat/message`, {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${BACKEND_URL}/api/chat/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
           "X-Chat-Id": activeChat.toString(),
-          "X-User-Id": token || "anonymous",
         },
         body: JSON.stringify(requestBody),
       });
