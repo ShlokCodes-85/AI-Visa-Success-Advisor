@@ -4,9 +4,15 @@ const ApplicationContext = createContext();
 
 export function ApplicationProvider({ children }) {
   const [applicationData, setApplicationData] = useState(null);
+  const [currentAnalysis, setCurrentAnalysis] = useState(null);
 
   return (
-    <ApplicationContext.Provider value={{ applicationData, setApplicationData }}>
+    <ApplicationContext.Provider value={{ 
+      applicationData, 
+      setApplicationData,
+      currentAnalysis,
+      setCurrentAnalysis
+    }}>
       {children}
     </ApplicationContext.Provider>
   );

@@ -19,6 +19,16 @@ export default function OAuthSuccess() {
       // Store the token
       localStorage.setItem("token", token);
       
+      // Extract userId from JWT token (without verification, just decode)
+      try {
+        const decoded = JSON.parse(atob(token.split('.')[1]));
+        if (decoded.id) {
+          localStorage.setItem("userId", decoded.id);
+        }
+      } catch (e) {
+        console.error("Could not decode token:", e);
+      }
+      
       // Redirect to application form
       navigate("/application");
       

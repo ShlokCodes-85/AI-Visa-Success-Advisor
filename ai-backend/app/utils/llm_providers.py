@@ -49,6 +49,34 @@ class OpenAIProvider(LLMProvider):
             raise Exception(f"OpenAI API error: {str(e)}")
 
 
+class XAIProvider(LLMProvider):
+    """xAI Grok provider (OpenAI-compatible API)"""
+
+    def __init__(self, api_key: str, model: str = "grok-4-1-fast-reasoning"):
+        self.api_key = api_key
+        self.model = model
+        try:
+            import openai
+            self.client = openai.AsyncOpenAI(
+                api_key=api_key,
+                base_url="https://api.x.ai/v1",
+            )
+        except ImportError:
+            raise ImportError("openai package not installed. Run: pip install openai")
+
+    async def generate_response(self, messages: list, temperature: float = 0.7) -> str:
+        try:
+            response = await self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=1200,
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            raise Exception(f"xAI API error: {str(e)}")
+
+
 class GeminiProvider(LLMProvider):
     """Google Gemini provider"""
     
@@ -201,6 +229,11 @@ def get_llm_provider() -> LLMProvider:
         if not api_key:
             raise ValueError("LLM_API_KEY not set for OpenAI provider")
         return OpenAIProvider(api_key, model)
+
+    elif provider == "xai":
+        if not api_key:
+            raise ValueError("LLM_API_KEY not set for xAI provider")
+        return XAIProvider(api_key, model)
     
     elif provider == "gemini":
         if not api_key:

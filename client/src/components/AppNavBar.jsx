@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { FiMenu, FiLogOut, FiEdit, FiMessageCircle, FiPlus, FiEdit2, FiTrash2, FiMessageSquare } from "react-icons/fi";
 import { VscAccount, VscSettingsGear } from "react-icons/vsc";
 import ThemeToggle from "./ThemeToggle";
-import Profile from "./Profile";
 import Dock from "./Dock";
 
 export default function AppNavBar({ 
@@ -24,7 +23,6 @@ export default function AppNavBar({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
   const [user, setUser] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(() => {
     // Initialize state from localStorage
@@ -264,22 +262,14 @@ export default function AppNavBar({
     localStorage.removeItem("token");
     localStorage.removeItem("profilePhoto");
     setShowProfileMenu(false);
-    setShowProfileModal(false);
     setUser(null);
     setProfilePhoto(null);
     navigate("/");
   };
 
   const handleProfileClick = () => {
-    setShowProfileModal(true);
     setShowProfileMenu(false);
-  };
-
-  const handleProfileModalClose = () => {
-    setShowProfileModal(false);
-    // Refresh profile photo in case it was updated
-    const savedPhoto = localStorage.getItem("profilePhoto");
-    setProfilePhoto(savedPhoto);
+    navigate("/profile");
   };
 
   const normalizedPhoto =
@@ -346,19 +336,6 @@ export default function AppNavBar({
             </button>
             {showProfileMenu && (
               <div className="absolute right-0 mt-2 w-56 sm:w-64 rounded-lg shadow-none border-none bg-transparent py-2 z-50">
-                {/* User Info Section */}
-                {user && (
-                  <>
-                    <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700">
-                      <p className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white truncate">
-                        {user.fullName}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                        {user.email}
-                      </p>
-                    </div>
-                  </>
-                )}
                 <Dock
                   items={[
                     { icon: <VscAccount size={16} />, label: 'Profile', onClick: handleProfileClick },
@@ -593,14 +570,6 @@ export default function AppNavBar({
           )}
         </nav>
         </div>
-      )}
-      {/* Profile Modal */}
-      {showProfileModal && (
-        <Profile
-          user={user || { fullName: '', email: '', createdAt: '' }}
-          onClose={handleProfileModalClose}
-          onPhotoChange={setProfilePhoto}
-        />
       )}
     </header>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FiEdit, FiMessageCircle } from "react-icons/fi";
 
 import AppNavBar from "../../components/AppNavBar";
@@ -17,7 +18,8 @@ import { useApplicationContext } from "../../contexts/ApplicationContext";
 import { formatFormDataForLLM } from "../../utils/formDataFormatter";
 
 export default function ApplicationForm() {
-  const { setApplicationData } = useApplicationContext();
+  const navigate = useNavigate();
+  const { setApplicationData, setCurrentAnalysis } = useApplicationContext();
   const [mode, setMode] = useState("form");
   const [currentSection, setCurrentSection] = useState(1);
   const [completedSections, setCompletedSections] = useState([]);
@@ -27,6 +29,7 @@ export default function ApplicationForm() {
   const [chatMessages, setChatMessages] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     dateOfBirth: "",
@@ -300,6 +303,73 @@ export default function ApplicationForm() {
     }
   };
 
+  const handleSubmitForm = async () => {
+    if (!validateSection(currentSection)) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+
+      if (!token || !userId) {
+        setErrors({ submit: "Authentication required. Please log in again." });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Get Python backend URL from environment or default
+      const PYTHON_BACKEND_URL = import.meta.env.VITE_PYTHON_BACKEND_URL || "http://localhost:8000";
+
+      // Call Python backend form analysis endpoint
+      const response = await fetch(`${PYTHON_BACKEND_URL}/api/form/analyze`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-User-Id": userId,
+        },
+        body: JSON.stringify({
+          form_data: formData,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrors({ submit: errorData.error || "Failed to analyze application" });
+        setIsSubmitting(false);
+        return;
+      }
+
+      const analysisData = await response.json();
+
+      if (analysisData.success && analysisData.analysis) {
+        // Store the analysis in context
+        const analysis = {
+          _id: `analysis_${Date.now()}`,
+          title: `Analysis - ${formData.fullName || "Application"}`,
+          email: formData.contactEmail || "",
+          createdAt: new Date().toISOString(),
+          formData: formData,
+          ...analysisData.analysis, // Include percentage, reasoning, improvements, explanations
+        };
+
+        setCurrentAnalysis(analysis);
+        setApplicationData(formData);
+
+        // Navigate to results page
+        navigate(`/results/${analysis._id}`);
+      } else {
+        setErrors({ submit: "Invalid response from analysis server" });
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setErrors({ submit: error.message || "Network error while analyzing application" });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const sections = [
     { id: 1, title: "Personal Details" },
     { id: 2, title: "Education Background" },
@@ -484,6 +554,11 @@ export default function ApplicationForm() {
 
           <div className="lg:col-span-3 flex flex-col">
             <div id="form-section-content" className="bg-white dark:bg-gray-900 rounded-lg sm:rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 flex-1">
+              {errors.submit && (
+                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <p className="text-red-700 dark:text-red-300 text-sm">{errors.submit}</p>
+                </div>
+              )}
               {renderSection()}
 
               <div className="mt-6 sm:mt-8 flex flex-row justify-between items-end gap-3 pt-6 sm:pt-8 border-t border-gray-200 dark:border-gray-700 relative min-h-[60px]">
@@ -501,13 +576,18 @@ export default function ApplicationForm() {
                     if (validateSection(currentSection)) {
                       setErrors({});
                       markSectionComplete(currentSection);
-                      if (currentSection < 8) setCurrentSection(currentSection + 1);
+                      if (currentSection < 8) {
+                        setCurrentSection(currentSection + 1);
+                      } else if (currentSection === 8) {
+                        handleSubmitForm();
+                      }
                     }
                   }}
-                  className="absolute right-0 bottom-0 px-8 py-2 rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 text-sm shadow-sm transition-all"
+                  disabled={isSubmitting}
+                  className="absolute right-0 bottom-0 px-8 py-2 rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm shadow-sm transition-all"
                   style={{ minWidth: '160px' }}
                 >
-                  {currentSection === 8 ? "Submit Form" : "Save and Continue"}
+                  {isSubmitting ? "Analyzing..." : currentSection === 8 ? "Submit Form" : "Save and Continue"}
                 </button>
               </div>
             </div>

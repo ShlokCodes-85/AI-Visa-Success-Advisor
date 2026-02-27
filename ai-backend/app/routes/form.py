@@ -24,6 +24,11 @@ class FormValidationRequest(BaseModel):
     field_requirements: Optional[str] = None
 
 
+class FormAnalysisRequest(BaseModel):
+    """Request model for full application analysis"""
+    form_data: dict
+
+
 @router.post("/guidance")
 async def get_form_guidance(
     request: FormFieldRequest,
@@ -87,7 +92,7 @@ async def validate_form_response(
             user_response=request.user_response,
             field_requirements=request.field_requirements,
         )
-        
+
         return {
             "success": True,
             **validation_result,
@@ -100,6 +105,43 @@ async def validate_form_response(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error validating form response: {str(e)}"
+        )
+
+
+@router.post("/analyze")
+async def analyze_application(
+    request: FormAnalysisRequest,
+    x_user_id: str = Header(..., alias="X-User-Id"),
+) -> dict:
+    """
+    Analyze a full form submission and return structured results.
+
+    Headers:
+        X-User-Id: ID of the authenticated user
+    """
+    try:
+        if not request.form_data:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="form_data is required"
+            )
+
+        analysis = await form_llm_service.analyze_application(
+            form_data=request.form_data,
+        )
+
+        return {
+            "success": True,
+            "user_id": x_user_id,
+            "analysis": analysis,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error generating analysis: {str(e)}"
         )
 
 

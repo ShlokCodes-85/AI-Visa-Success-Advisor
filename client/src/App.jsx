@@ -11,6 +11,8 @@ import Footer from "./components/Footer";
 import OAuthSuccess from "./pages/OAuthSuccess";
 import ResetPassword from "./pages/ResetPassword";
 import ApplicationForm from "./pages/FormMode/ApplicationForm";
+import Results from "./pages/Results";
+import ProfilePage from "./pages/ProfilePage";
 import { ApplicationProvider } from "./contexts/ApplicationContext";
 
 function OAuthQueryHandler() {
@@ -68,6 +70,16 @@ function App() {
                     <ApplicationForm />
                   </ProtectedRoute>
                 )
+          }
+        />
+        <Route path="/results" element={<Results />} />
+        <Route path="/results/:analysisId" element={<Results />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
           }
         />
         <Route

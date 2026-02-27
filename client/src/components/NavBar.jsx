@@ -61,10 +61,11 @@ function Navbar() {
         {/* Mobile menu button - LEFT SIDE */}
         <button 
           onClick={() => setShowMenu(!showMenu)}
-          className="md:hidden p-2 rounded-lg transition-colors mr-2"
+          className="md:hidden p-2 rounded-lg transition-colors mr-2 hover:bg-gray-100 dark:hover:bg-gray-700"
           aria-label="Toggle menu"
+          style={{ color: 'currentColor' }}
         >
-          {showMenu ? <FiX size={24} /> : <FiMenu size={24} />}
+          {showMenu ? <FiX size={24} className="text-black dark:text-white" /> : <FiMenu size={24} className="text-black dark:text-white" />}
         </button>
 
         <div className="navbar-brand-font text-lg sm:text-xl lg:text-2xl font-bold text-blue-600 dark:text-blue-400 truncate">
@@ -125,22 +126,22 @@ function Navbar() {
         <>
           {/* Backdrop overlay */}
           <div 
-            className="fixed inset-0 bg-black/50 z-30 md:hidden"
+            className="fixed inset-0 bg-black/50 z-50 md:hidden"
             onClick={() => setShowMenu(false)}
           />
           {/* Sidebar */}
-          <div className="md:hidden fixed left-0 top-0 h-screen w-64 sm:w-72 bg-white shadow-xl z-40 animate-in slide-in-from-left-3">
+          <div className="md:hidden fixed left-0 top-0 h-screen w-64 sm:w-72 bg-white dark:bg-gray-800 shadow-xl z-[60] animate-in slide-in-from-left-3">
             {/* Close button and header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <span className="navbar-brand-font text-lg font-bold text-blue-600">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <span className="navbar-brand-font text-lg font-bold text-blue-600 dark:text-blue-400">
                 Advisa
               </span>
               <button 
                 onClick={() => setShowMenu(false)}
-                className="p-2 rounded-lg text-black"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 aria-label="Close menu"
               >
-                <FiX size={24} />
+                <FiX size={24} className="text-black dark:text-white" />
               </button>
             </div>
 
@@ -151,8 +152,8 @@ function Navbar() {
                 onClick={handleNavClick}
                 className={`px-4 py-3 rounded-lg font-medium text-base border-l-4 transition-all duration-200 ${
                   activeSection === 'features'
-                    ? 'text-blue-600 bg-blue-50 border-blue-600'
-                    : 'text-black border-transparent'
+                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border-blue-600 dark:border-blue-400'
+                    : 'text-black dark:text-gray-100 border-transparent'
                 }`}
               >
                 Features
@@ -162,8 +163,8 @@ function Navbar() {
                 onClick={handleNavClick}
                 className={`px-4 py-3 rounded-lg font-medium text-base border-l-4 transition-all duration-200 ${
                   activeSection === 'how-it-works'
-                    ? 'text-blue-600 bg-blue-50 border-blue-600'
-                    : 'text-black border-transparent'
+                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border-blue-600 dark:border-blue-400'
+                    : 'text-black dark:text-gray-100 border-transparent'
                 }`}
               >
                 How It Works
@@ -173,8 +174,8 @@ function Navbar() {
                 onClick={handleNavClick}
                 className={`px-4 py-3 rounded-lg font-medium text-base border-l-4 transition-all duration-200 ${
                   activeSection === 'testimonials'
-                    ? 'text-blue-600 bg-blue-50 border-blue-600'
-                    : 'text-black border-transparent'
+                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border-blue-600 dark:border-blue-400'
+                    : 'text-black dark:text-gray-100 border-transparent'
                 }`}
               >
                 Testimonials
@@ -184,8 +185,8 @@ function Navbar() {
                 onClick={handleNavClick}
                 className={`px-4 py-3 rounded-lg font-medium text-base border-l-4 transition-all duration-200 ${
                   activeSection === 'faq'
-                    ? 'text-blue-600 bg-blue-50 border-blue-600'
-                    : 'text-black border-transparent'
+                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border-blue-600 dark:border-blue-400'
+                    : 'text-black dark:text-gray-100 border-transparent'
                 }`}
               >
                 FAQ
@@ -193,7 +194,7 @@ function Navbar() {
             </div>
 
             {/* Get Started Button - Bottom of Sidebar */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700">
               <button 
                 onClick={() => {
                   setShowAuth(true);

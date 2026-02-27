@@ -2,9 +2,12 @@
 Form Mode LLM Service - handles communication with LLM provider for form mode
 This allows using a different LLM provider for form mode compared to chat mode
 """
-from typing import List, Dict
-from app.utils.llm_providers import get_llm_provider, LLMProvider
+from typing import List, Dict, Any
+import json
+import re
+from app.utils.llm_providers import get_llm_provider, LLMProvider, XAIProvider
 from app.config.settings import settings
+from app.services.explainability import generate_explanations
 
 
 class FormLLMService:
@@ -29,14 +32,14 @@ Always be professional, accurate, and compliant with visa regulations."""
     
     def _initialize_form_provider(self) -> LLMProvider:
         """Initialize LLM provider with form mode configuration"""
-        # TODO: Update this method to use FORM_LLM_PROVIDER settings
-        # Currently uses the same provider system, but can be extended to support different providers
         from app.utils.llm_providers import OpenAIProvider, GeminiProvider
         
         api_key = self.api_key or settings.LLM_API_KEY
         
         if self.provider_name.lower() == "openai":
             return OpenAIProvider(api_key=api_key, model=self.model)
+        elif self.provider_name.lower() == "xai":
+            return XAIProvider(api_key=api_key, model=self.model)
         elif self.provider_name.lower() == "gemini":
             return GeminiProvider(api_key=api_key, model=self.model)
         else:
@@ -141,6 +144,86 @@ Provide feedback on:
         self.api_key = api_key
         self.model = model
         self.provider = self._initialize_form_provider()
+
+    async def analyze_application(
+        self,
+        form_data: Dict[str, Any],
+        temperature: float = 0.4,
+    ) -> Dict[str, Any]:
+        """
+        Generate a structured analysis for the Results dashboard.
+        """
+        try:
+            system_prompt = """You are an expert visa application analyst.
+Return ONLY valid JSON following this schema:
+{
+  "percentage": number (0-100),
+  "summary": string,
+  "reasoning": [
+    {"factor": string, "impact": "positive"|"negative"|"neutral", "description": string, "weight": number (0-1)}
+  ],
+  "improvements": [
+    {"category": string, "suggestion": string, "priority": "high"|"medium"|"low"}
+  ]
+}
+Constraints:
+- Use 4-6 reasoning items.
+- Weights must sum roughly to 1.0.
+- Percentage should align with reasoning impacts.
+"""
+
+            user_message = {
+                "form_data": form_data
+            }
+
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": json.dumps(user_message)}
+            ]
+
+            raw_response = await self.provider.generate_response(messages, temperature)
+            parsed = _safe_json_extract(raw_response)
+
+            # Normalize output
+            percentage = int(max(0, min(100, round(float(parsed.get("percentage", 0))))))
+            reasoning = parsed.get("reasoning", [])
+            improvements = parsed.get("improvements", [])
+
+            # Clamp weights and normalize if needed
+            weights = [float(item.get("weight", 0.0) or 0.0) for item in reasoning]
+            total_weight = sum(weights) if weights else 0.0
+            if total_weight > 0:
+                for item in reasoning:
+                    item["weight"] = round(float(item.get("weight", 0.0)) / total_weight, 4)
+
+            explanations = generate_explanations(reasoning)
+
+            return {
+                "percentage": percentage,
+                "summary": parsed.get("summary", ""),
+                "reasoning": reasoning,
+                "improvements": improvements,
+                "explanations": explanations,
+            }
+
+        except Exception as e:
+            raise Exception(f"Error generating analysis: {str(e)}")
+
+
+def _safe_json_extract(text: str) -> Dict[str, Any]:
+    """
+    Extract JSON object from LLM response safely.
+    """
+    try:
+        return json.loads(text)
+    except Exception:
+        match = re.search(r"\{[\s\S]*\}", text)
+        if not match:
+            return {}
+        try:
+            return json.loads(match.group(0))
+        except Exception:
+            return {}
 
 
 # Global instance
