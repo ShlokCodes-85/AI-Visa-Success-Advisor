@@ -30,9 +30,11 @@ export default function ResultsNavBar({ onToggleSidebar, onCreateNew }) {
           const data = await response.json();
           setUser(data.user);
           
-          if (data.user.profilePhoto) {
-            setProfilePhoto(data.user.profilePhoto);
-            localStorage.setItem("profilePhoto", data.user.profilePhoto);
+          // Use profilePhoto (manual) or avatar (OAuth) as fallback
+          const photoToUse = data.user.profilePhoto || data.user.avatar;
+          if (photoToUse) {
+            setProfilePhoto(photoToUse);
+            localStorage.setItem("profilePhoto", photoToUse);
           }
         }
       } catch (error) {
@@ -94,8 +96,8 @@ export default function ResultsNavBar({ onToggleSidebar, onCreateNew }) {
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 w-full sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
           {/* Title */}
-          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight select-none">
-            advisa
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400 tracking-tight select-none">
+            Advisa
           </h1>
 
           {/* Mobile Action Buttons */}

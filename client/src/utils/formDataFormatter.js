@@ -65,7 +65,7 @@ export const createApplicationSummary = (formData) => {
 
 ## Financial Information
 - Currency: ${formatted.requiredCurrency || "N/A"}
-- Required Funding: ${formatted.requiredFunding || "N/A"}
+- College-Required Amount (I-20 for one year): ${formatted.requiredFunding || "N/A"}
 - Annual Family Income: ${formatted.familyIncome || "N/A"}
 - Total Savings: ${formatted.savingsAmount || "N/A"}
 - Sponsor: ${formatted.sponsorName || "N/A"} (${formatted.sponsorRelation || "N/A"})

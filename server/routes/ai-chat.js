@@ -81,17 +81,31 @@ Be professional, empathetic, encouraging, and thorough. Provide specific, action
     const fullPrompt = `${systemContext}\n${documentAnalysisPrompt}\n\nUser Question: ${message}\n\nProvide a comprehensive response addressing the user's question${documents && documents.length > 0 ? ' and analyzing the uploaded documents in detail' : ''}.`;
 
     console.log("[AI CHAT] Full prompt length:", fullPrompt.length);
-    console.log("[AI CHAT] Model:", process.env.CHAT_LLM_MODEL || "gemini-1.5-pro");
+    const rawModel = process.env.CHAT_LLM_MODEL || "gemini-2.5-flash";
+    const preferredModel = rawModel.startsWith("models/") ? rawModel.replace("models/", "") : rawModel;
+    console.log("[AI CHAT] Model:", preferredModel);
 
     // Get Gemini model
-    const model = genAI.getGenerativeModel({ 
-      model: process.env.CHAT_LLM_MODEL || "gemini-1.5-pro" 
+    const model = genAI.getGenerativeModel({
+      model: preferredModel
     });
 
     console.log("[AI CHAT] Model initialized, calling generateContent...");
 
-    // Generate response
-    const result = await model.generateContent(fullPrompt);
+    // Generate response with fallback for older model support
+    let result;
+    try {
+      result = await model.generateContent(fullPrompt);
+    } catch (modelError) {
+      if (modelError?.message?.includes("not found") || modelError?.message?.includes("not supported")) {
+        const fallbackModel = "gemini-2.0-flash";
+        console.warn(`[AI CHAT] Model ${preferredModel} not available. Falling back to ${fallbackModel}.`);
+        const fallback = genAI.getGenerativeModel({ model: fallbackModel });
+        result = await fallback.generateContent(fullPrompt);
+      } else {
+        throw modelError;
+      }
+    }
     console.log("[AI CHAT] Got result from generateContent");
     
     const response = await result.response;

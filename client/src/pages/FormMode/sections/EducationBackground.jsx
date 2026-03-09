@@ -1,6 +1,7 @@
+import { X } from 'lucide-react';
 import FormField from '../../../components/FormField';
 
-export default function EducationBackground({ formData, handleInputChange, errors = {} }) {
+export default function EducationBackground({ formData, handleInputChange, errors = {}, onClearSection }) {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 1950 + 1 }, (_, i) => currentYear - i);
 
@@ -13,7 +14,19 @@ export default function EducationBackground({ formData, handleInputChange, error
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Education Background</h2>
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Education Background</h2>
+        {onClearSection && (
+          <button
+            onClick={onClearSection}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg border border-red-300 dark:border-red-700 transition-all"
+            title="Clear this section"
+          >
+            <X className="w-4 h-4" />
+            <span>Clear Section</span>
+          </button>
+        )}
+      </div>
       <p className="text-gray-600 dark:text-gray-300 mb-8">Please provide your current educational qualifications.</p>
 
       <div className="grid grid-cols-2 gap-6">

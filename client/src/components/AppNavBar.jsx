@@ -1,8 +1,8 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiMenu, FiLogOut, FiEdit, FiMessageCircle, FiPlus, FiEdit2, FiTrash2, FiMessageSquare } from "react-icons/fi";
-import { VscAccount, VscSettingsGear } from "react-icons/vsc";
+import { FiMenu, FiLogOut, FiEdit, FiMessageCircle, FiPlus, FiEdit2, FiTrash2, FiMessageSquare, FiClock } from "react-icons/fi";
+import { VscAccount } from "react-icons/vsc";
 import ThemeToggle from "./ThemeToggle";
 import Dock from "./Dock";
 
@@ -54,11 +54,12 @@ export default function AppNavBar({
           console.log("User data received:", data);
           setUser(data.user);
           
-          // Set profile photo from user data if available
-          if (data.user.profilePhoto) {
-            setProfilePhoto(data.user.profilePhoto);
+          // Set profile photo from user data - prefer profilePhoto (manual upload) over avatar (OAuth)
+          const photoToUse = data.user.profilePhoto || data.user.avatar;
+          if (photoToUse) {
+            setProfilePhoto(photoToUse);
             // Also save to localStorage for quick access
-            localStorage.setItem("profilePhoto", data.user.profilePhoto);
+            localStorage.setItem("profilePhoto", photoToUse);
           }
           console.log("User set to:", data.user);
         } else {
@@ -285,13 +286,15 @@ export default function AppNavBar({
           <FiMenu className="w-6 h-6" />
         </button>
         {/* Title - on left for desktop, centered for mobile */}
-        <h1 className="lg:flex-none text-center lg:text-left text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight select-none lg:w-auto">advisa</h1>
-        {/* Segmented Mode Switch Button (Form/Chat) for desktop - centered */}
-        <div className="hidden lg:flex flex-1 justify-center z-10">
+        <h1 className="lg:flex-none text-center lg:text-left text-lg sm:text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400 tracking-tight select-none lg:w-auto">
+          Advisa
+        </h1>
+        {/* Segmented Mode Switch Button (Form/Chat) for tablet and desktop - centered */}
+        <div className="hidden md:flex flex-1 justify-center z-10">
           <div className="flex flex-row items-center gap-0 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-1.5 shadow-sm">
             <button
               onClick={() => mode !== "form" && setMode("form")}
-              className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all focus:outline-none
+              className={`flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 rounded-full text-sm font-semibold transition-all focus:outline-none
                 ${mode === "form"
                   ? "bg-blue-500 text-white shadow-lg"
                   : "bg-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"}
@@ -303,7 +306,7 @@ export default function AppNavBar({
             </button>
             <button
               onClick={() => mode !== "chat" && setMode("chat")}
-              className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all focus:outline-none
+              className={`flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 rounded-full text-sm font-semibold transition-all focus:outline-none
                 ${mode === "chat"
                   ? "bg-blue-500 text-white shadow-lg"
                   : "bg-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"}
@@ -319,7 +322,11 @@ export default function AppNavBar({
         <div className="relative ml-auto">
             <button
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-500 dark:bg-blue-600 flex items-center justify-center text-white font-bold hover:bg-blue-600 dark:hover:bg-blue-700 transition-all overflow-hidden border-2 border-white dark:border-gray-800 flex-shrink-0"
+              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white font-bold hover:shadow-md transition-all overflow-hidden border-2 flex-shrink-0 ${
+                normalizedPhoto 
+                  ? 'bg-gray-300 dark:bg-gray-600 border-white dark:border-gray-800' 
+                  : 'bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 border-white dark:border-gray-800'
+              }`}
               style={
                 normalizedPhoto
                   ? {
@@ -339,7 +346,6 @@ export default function AppNavBar({
                 <Dock
                   items={[
                     { icon: <VscAccount size={16} />, label: 'Profile', onClick: handleProfileClick },
-                    { icon: <VscSettingsGear size={16} />, label: 'Settings', onClick: () => alert('Settings coming soon!') },
                     {
                       icon: (
                         <span className="flex items-center justify-center">
@@ -375,7 +381,20 @@ export default function AppNavBar({
           {/* Conditional Content: Form Sections or Chat Controls */}
           {mode === "form" ? (
             <>
-              <span className="text-lg font-bold text-blue-600 mb-4">Sections</span>
+              <span className="text-lg font-bold text-blue-600 mb-2">Sections</span>
+              
+              {/* View Past Results Button */}
+              <button
+                onClick={() => {
+                  navigate('/results');
+                  setSidebarOpen(false);
+                }}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg transition-all font-medium shadow-md hover:shadow-lg text-sm min-h-[44px]"
+              >
+                <FiClock size={16} />
+                <span>View Past Results</span>
+              </button>
+
               <a
                 href="#personal-details"
                 className={`flex items-center gap-2 text-base text-gray-700 dark:text-gray-200 py-1 group ${currentSection === 1 ? 'font-bold text-blue-600' : ''}`}
@@ -477,6 +496,19 @@ export default function AppNavBar({
             <>
               {/* Chat Controls */}
               <span className="text-lg font-bold text-blue-600 mb-2">Chats</span>
+              
+              {/* View Past Results Button */}
+              <button
+                onClick={() => {
+                  navigate('/results');
+                  setSidebarOpen(false);
+                }}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 mb-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg transition-all font-medium shadow-md hover:shadow-lg text-sm min-h-[44px]"
+              >
+                <FiClock size={16} />
+                <span>View Past Results</span>
+              </button>
+              
               <button
                 onClick={() => {
                   handleCreateNewChat();

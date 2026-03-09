@@ -1,11 +1,15 @@
-import { Upload } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import mammoth from 'mammoth';
+import * as pdfjsLib from 'pdfjs-dist';
 
-export default function StatementOfPurpose({ formData, handleInputChange, errors = {} }) {
+export default function StatementOfPurpose({ formData, handleInputChange, errors = {}, onClearSection }) {
   const [uploadStatus, setUploadStatus] = useState("");
   const [fileName, setFileName] = useState("");
   const [hasUploadedContent, setHasUploadedContent] = useState(false);
+
+  // Set PDF worker
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
   // Clear upload status when text is deleted
   useEffect(() => {
@@ -21,10 +25,10 @@ export default function StatementOfPurpose({ formData, handleInputChange, errors
     if (!file) return;
 
     // Check file type
-    const allowedTypes = ['text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const allowedTypes = ['text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/pdf'];
     
     if (!allowedTypes.includes(file.type)) {
-      setUploadStatus("Please upload a valid document (TXT, DOC, or DOCX)");
+      setUploadStatus("Please upload a valid document (TXT, DOC, DOCX, or PDF)");
       setFileName("");
       setHasUploadedContent(false);
       return;
@@ -53,6 +57,20 @@ export default function StatementOfPurpose({ formData, handleInputChange, errors
         const arrayBuffer = await file.arrayBuffer();
         const result = await mammoth.extractRawText({ arrayBuffer });
         extractedText = result.value;
+      } else if (file.type === 'application/pdf') {
+        // Handle PDF files
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const textPages = [];
+
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map(item => item.str).join(' ');
+          textPages.push(pageText);
+        }
+
+        extractedText = textPages.join('\n');
       }
 
       if (extractedText.trim()) {
@@ -79,7 +97,19 @@ export default function StatementOfPurpose({ formData, handleInputChange, errors
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Statement of Purpose (SOP)</h2>
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Statement of Purpose (SOP)</h2>
+        {onClearSection && (
+          <button
+            onClick={onClearSection}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg border border-red-300 dark:border-red-700 transition-all"
+            title="Clear this section"
+          >
+            <X className="w-4 h-4" />
+            <span>Clear Section</span>
+          </button>
+        )}
+      </div>
       <p className="text-gray-600 dark:text-gray-300 mb-8">Write a compelling statement about why you want to study abroad and your future goals.</p>
 
       <div>
@@ -96,7 +126,7 @@ export default function StatementOfPurpose({ formData, handleInputChange, errors
             <input
               id="sopFileUpload"
               type="file"
-              accept=".txt,.doc,.docx"
+              accept=".txt,.doc,.docx,.pdf"
               onChange={handleFileUpload}
               className="hidden"
             />
@@ -104,7 +134,7 @@ export default function StatementOfPurpose({ formData, handleInputChange, errors
         </div>
 
         {/* File type info */}
-        <p className="text-xs text-gray-500 dark:text-gray-400 text-right mb-2">TXT, DOC, or DOCX (Max 5MB)</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 text-right mb-2">TXT, DOC, DOCX, or PDF (Max 5MB)</p>
 
         {/* Upload Status */}
         {uploadStatus && (

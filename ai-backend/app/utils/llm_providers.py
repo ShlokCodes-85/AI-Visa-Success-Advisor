@@ -77,6 +77,34 @@ class XAIProvider(LLMProvider):
             raise Exception(f"xAI API error: {str(e)}")
 
 
+class DeepSeekProvider(LLMProvider):
+    """DeepSeek provider (OpenAI-compatible API)"""
+
+    def __init__(self, api_key: str, model: str = "deepseek-chat"):
+        self.api_key = api_key
+        self.model = model
+        try:
+            import openai
+            self.client = openai.AsyncOpenAI(
+                api_key=api_key,
+                base_url="https://api.deepseek.com",
+            )
+        except ImportError:
+            raise ImportError("openai package not installed. Run: pip install openai")
+
+    async def generate_response(self, messages: list, temperature: float = 0.7) -> str:
+        try:
+            response = await self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=1200,
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            raise Exception(f"DeepSeek API error: {str(e)}")
+
+
 class GeminiProvider(LLMProvider):
     """Google Gemini provider"""
     
@@ -130,10 +158,18 @@ class GeminiProvider(LLMProvider):
                 user_message,
                 generation_config={
                     "temperature": temperature,
-                    "max_output_tokens": 1000,
+                    "max_output_tokens": 3000,
                 }
             )
-            return response.text
+            # Strip markdown code blocks if present
+            text = response.text.strip()
+            if text.startswith("```json"):
+                text = text[7:]  # Remove ```json
+            if text.startswith("```"):
+                text = text[3:]  # Remove ```
+            if text.endswith("```"):
+                text = text[:-3]  # Remove trailing ```
+            return text.strip()
         except Exception as e:
             raise Exception(f"Gemini API error: {str(e)}")
 
@@ -234,6 +270,11 @@ def get_llm_provider() -> LLMProvider:
         if not api_key:
             raise ValueError("LLM_API_KEY not set for xAI provider")
         return XAIProvider(api_key, model)
+
+    elif provider == "deepseek":
+        if not api_key:
+            raise ValueError("LLM_API_KEY not set for DeepSeek provider")
+        return DeepSeekProvider(api_key, model)
     
     elif provider == "gemini":
         if not api_key:

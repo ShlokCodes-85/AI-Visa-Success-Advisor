@@ -1,7 +1,21 @@
-export default function HomeCountryTies({ formData, handleInputChange, errors = {} }) {
+import { X } from 'lucide-react';
+
+export default function HomeCountryTies({ formData, handleInputChange, errors = {}, onClearSection }) {
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Home Country Ties</h2>
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Home Country Ties</h2>
+        {onClearSection && (
+          <button
+            onClick={onClearSection}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg border border-red-300 dark:border-red-700 transition-all"
+            title="Clear this section"
+          >
+            <X className="w-4 h-4" />
+            <span>Clear Section</span>
+          </button>
+        )}
+      </div>
       <p className="text-gray-600 dark:text-gray-300 mb-8">Please provide information about your connections to your home country.</p>
 
       <div className="grid grid-cols-2 gap-6">

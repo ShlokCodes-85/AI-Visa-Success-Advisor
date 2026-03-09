@@ -1,12 +1,23 @@
 import { Check } from "lucide-react";
-
+import { FiClock } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 
 export default function Sidebar({ sections, currentSection, setCurrentSection, completedSections = [] }) {
   const sidebarRef = useRef(null);
+  const navigate = useNavigate();
   return (
     <div ref={sidebarRef} className="application-sidebar hidden lg:block w-48 xl:w-64 bg-white dark:bg-gray-900 rounded-lg sm:rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-4 h-[70vh] sticky top-8 overflow-y-auto">
       <h2 className="font-bold text-base sm:text-lg text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">Application Progress</h2>
+
+      {/* View Past Results Button */}
+      <button
+        onClick={() => navigate('/results')}
+        className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg transition-all font-medium shadow-md hover:shadow-lg text-xs sm:text-sm"
+      >
+        <FiClock size={16} />
+        <span>View Past Results</span>
+      </button>
 
       <div className="space-y-1.5 sm:space-y-2">
         {sections.map((section) => (

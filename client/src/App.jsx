@@ -32,6 +32,14 @@ function OAuthQueryHandler() {
 
     if (token) {
       localStorage.setItem("token", token);
+      try {
+        const decoded = JSON.parse(atob(token.split('.')[1]));
+        if (decoded.id) {
+          localStorage.setItem("userId", decoded.id);
+        }
+      } catch (e) {
+        console.error("Could not decode token:", e);
+      }
       // Hard redirect to ensure ProtectedRoute sees the token
       window.location.href = "/application";
     }

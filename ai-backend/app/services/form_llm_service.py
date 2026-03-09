@@ -32,7 +32,7 @@ Always be professional, accurate, and compliant with visa regulations."""
     
     def _initialize_form_provider(self) -> LLMProvider:
         """Initialize LLM provider with form mode configuration"""
-        from app.utils.llm_providers import OpenAIProvider, GeminiProvider
+        from app.utils.llm_providers import OpenAIProvider, GeminiProvider, DeepSeekProvider
         
         api_key = self.api_key or settings.LLM_API_KEY
         
@@ -40,6 +40,8 @@ Always be professional, accurate, and compliant with visa regulations."""
             return OpenAIProvider(api_key=api_key, model=self.model)
         elif self.provider_name.lower() == "xai":
             return XAIProvider(api_key=api_key, model=self.model)
+        elif self.provider_name.lower() == "deepseek":
+            return DeepSeekProvider(api_key=api_key, model=self.model)
         elif self.provider_name.lower() == "gemini":
             return GeminiProvider(api_key=api_key, model=self.model)
         else:
@@ -170,6 +172,8 @@ Constraints:
 - Use 4-6 reasoning items.
 - Weights must sum roughly to 1.0.
 - Percentage should align with reasoning impacts.
+- Treat `requiredFunding` as the college-required amount mentioned in the applicant's I-20 for one year.
+- In financial reasoning/improvements, explicitly reference one-year I-20 amount coverage.
 """
 
             user_message = {
@@ -183,6 +187,36 @@ Constraints:
 
             raw_response = await self.provider.generate_response(messages, temperature)
             parsed = _safe_json_extract(raw_response)
+
+            if not _is_valid_analysis_payload(parsed):
+                retry_system_prompt = """You are an expert visa application analyst.
+Return ONLY valid JSON. No markdown. No extra text.
+Schema:
+{
+  "percentage": number (0-100),
+  "summary": string,
+  "reasoning": [
+    {"factor": string, "impact": "positive"|"negative"|"neutral", "description": string, "weight": number (0-1)}
+  ],
+  "improvements": [
+    {"category": string, "suggestion": string, "priority": "high"|"medium"|"low"}
+  ]
+}
+Rules:
+- Use exactly 5 reasoning items and exactly 3 improvements.
+- Keep summary under 40 words.
+- Keep each description and suggestion under 18 words.
+- Weights must sum to 1.0.
+- Treat `requiredFunding` as the college-required amount mentioned in I-20 for one year.
+"""
+                retry_messages = [
+                    {"role": "system", "content": retry_system_prompt},
+                    {"role": "user", "content": json.dumps(user_message)}
+                ]
+                retry_raw_response = await self.provider.generate_response(retry_messages, 0.2)
+                retry_parsed = _safe_json_extract(retry_raw_response)
+                if _is_valid_analysis_payload(retry_parsed):
+                    parsed = retry_parsed
 
             # Normalize output
             percentage = int(max(0, min(100, round(float(parsed.get("percentage", 0))))))
@@ -214,6 +248,16 @@ def _safe_json_extract(text: str) -> Dict[str, Any]:
     """
     Extract JSON object from LLM response safely.
     """
+    # Strip markdown code blocks
+    text = text.strip()
+    if text.startswith("```json"):
+        text = text[7:]
+    if text.startswith("```"):
+        text = text[3:]
+    if text.endswith("```"):
+        text = text[:-3]
+    text = text.strip()
+    
     try:
         return json.loads(text)
     except Exception:
@@ -224,6 +268,16 @@ def _safe_json_extract(text: str) -> Dict[str, Any]:
             return json.loads(match.group(0))
         except Exception:
             return {}
+
+
+def _is_valid_analysis_payload(payload: Dict[str, Any]) -> bool:
+    if not isinstance(payload, dict):
+        return False
+    if "percentage" not in payload or "reasoning" not in payload or "improvements" not in payload:
+        return False
+    if not isinstance(payload.get("reasoning"), list) or not isinstance(payload.get("improvements"), list):
+        return False
+    return True
 
 
 # Global instance

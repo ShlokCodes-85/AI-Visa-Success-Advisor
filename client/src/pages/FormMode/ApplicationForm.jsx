@@ -30,7 +30,9 @@ export default function ApplicationForm() {
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
+  
+  // Initialize formData with default values
+  const defaultFormData = {
     fullName: "",
     dateOfBirth: "",
     gender: "",
@@ -61,16 +63,71 @@ export default function ApplicationForm() {
     hasInterviewExperience: "",
     visaDestinationCountry: "",
     visaStatus: "",
-
     applicationYear: "",
     rejectionReason: "",
     deportationOrIssues: "",
     deportationOrIssuesDetails: "",
-
-    // Exam section
     examType: "",
     examScore: "",
+  };
+
+  const [formData, setFormData] = useState(() => {
+    // Load saved form data from localStorage on initial mount
+    try {
+      const savedFormData = localStorage.getItem("visaFormData");
+      if (savedFormData) {
+        console.log("Restoring saved form data from localStorage");
+        return JSON.parse(savedFormData);
+      }
+    } catch (error) {
+      console.error("Error loading saved form data:", error);
+    }
+    return defaultFormData;
   });
+
+  // Load saved section progress on mount
+  useEffect(() => {
+    try {
+      const savedSection = localStorage.getItem("visaFormCurrentSection");
+      const savedCompletedSections = localStorage.getItem("visaFormCompletedSections");
+      
+      if (savedSection) {
+        setCurrentSection(parseInt(savedSection, 10));
+      }
+      if (savedCompletedSections) {
+        setCompletedSections(JSON.parse(savedCompletedSections));
+      }
+    } catch (error) {
+      console.error("Error loading saved section progress:", error);
+    }
+  }, []);
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem("visaFormData", JSON.stringify(formData));
+    } catch (error) {
+      console.error("Error saving form data:", error);
+    }
+  }, [formData]);
+
+  // Save current section to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("visaFormCurrentSection", currentSection.toString());
+    } catch (error) {
+      console.error("Error saving current section:", error);
+    }
+  }, [currentSection]);
+
+  // Save completed sections to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("visaFormCompletedSections", JSON.stringify(completedSections));
+    } catch (error) {
+      console.error("Error saving completed sections:", error);
+    }
+  }, [completedSections]);
 
   // Update context with formatted application data whenever formData changes
   useEffect(() => {
@@ -311,7 +368,19 @@ export default function ApplicationForm() {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
+      let userId = localStorage.getItem("userId");
+
+      if (!userId && token) {
+        try {
+          const decoded = JSON.parse(atob(token.split(".")[1]));
+          if (decoded?.id) {
+            userId = decoded.id;
+            localStorage.setItem("userId", userId);
+          }
+        } catch (e) {
+          console.error("Could not decode token:", e);
+        }
+      }
 
       if (!token || !userId) {
         setErrors({ submit: "Authentication required. Please log in again." });
@@ -331,6 +400,7 @@ export default function ApplicationForm() {
         },
         body: JSON.stringify({
           form_data: formData,
+          email: formData.contactEmail || "", // Add email field
         }),
       });
 
@@ -343,19 +413,82 @@ export default function ApplicationForm() {
 
       const analysisData = await response.json();
 
-      if (analysisData.success && analysisData.analysis) {
+      if (analysisData.success && analysisData.analysis_results) {
         // Store the analysis in context
         const analysis = {
-          _id: `analysis_${Date.now()}`,
+          _id: analysisData.analysis_id || `analysis_${Date.now()}`,
           title: `Analysis - ${formData.fullName || "Application"}`,
           email: formData.contactEmail || "",
           createdAt: new Date().toISOString(),
           formData: formData,
-          ...analysisData.analysis, // Include percentage, reasoning, improvements, explanations
+          ...analysisData.analysis_results, // Spread the analysis_results object
         };
 
         setCurrentAnalysis(analysis);
         setApplicationData(formData);
+
+        // Save to Node.js backend so it appears in analyses list
+        try {
+          const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+          const token = localStorage.getItem("token");
+          
+          console.log("Attempting to save analysis:", {
+            hasToken: !!token,
+            hasBackendUrl: !!BACKEND_URL,
+            backendUrl: BACKEND_URL
+          });
+          
+          if (token && BACKEND_URL) {
+            const saveResponse = await fetch(`${BACKEND_URL}/api/analyses`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                title: analysis.title,
+                percentage: analysisData.analysis_results.percentage,
+                reasoning: analysisData.analysis_results.reasoning,
+                improvements: analysisData.analysis_results.improvements,
+                formData: formData,
+              }),
+            });
+
+            if (saveResponse.ok) {
+              const savedData = await saveResponse.json();
+              console.log("✅ Analysis saved to Node.js backend:", savedData);
+              // Use the Node.js backend's ID for navigation so it can be fetched later
+              if (savedData.analysis && savedData.analysis.id) {
+                analysis._id = savedData.analysis.id;
+              }
+            } else {
+              const errorText = await saveResponse.text();
+              console.error("❌ Failed to save analysis to Node.js backend:", {
+                status: saveResponse.status,
+                statusText: saveResponse.statusText,
+                error: errorText
+              });
+              alert(`Error saving analysis: ${saveResponse.status} ${saveResponse.statusText}`);
+            }
+          } else {
+            console.warn("⚠️ Skipping Node.js save - missing token or backend URL");
+            if (!token) console.warn("No authentication token found");
+            if (!BACKEND_URL) console.warn("No BACKEND_URL environment variable set");
+          }
+        } catch (error) {
+          console.error("❌ Exception while saving to Node.js backend:", error);
+          alert(`Error saving to database: ${error.message}`);
+        }
+
+        // Clear saved form data from localStorage after successful submission
+        try {
+          localStorage.removeItem("visaFormData");
+          localStorage.removeItem("visaFormCurrentSection");
+          localStorage.removeItem("visaFormCompletedSections");
+          console.log("Cleared saved form data after successful submission");
+        } catch (error) {
+          console.error("Error clearing saved form data:", error);
+        }
 
         // Navigate to results page
         navigate(`/results/${analysis._id}`);
@@ -368,6 +501,44 @@ export default function ApplicationForm() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleClearSection = (sectionId) => {
+    if (!window.confirm("Are you sure you want to clear this section? This action cannot be undone.")) {
+      return;
+    }
+
+    const sectionFields = {
+      1: ["fullName", "dateOfBirth", "gender", "nationality", "countryOfResidency", "contactEmail", "phoneNumber"],
+      2: ["educationLevel", "institution", "fieldOfStudy", "graduationYear", "gpaScale", "gpa"],
+      3: ["courseType", "universityName", "courseName", "startDate"],
+      4: ["examType", "examScore"],
+      5: ["familyIncome", "savingsAmount", "requiredCurrency", "requiredFunding", "sponsorName", "sponsorRelation"],
+      6: ["propertyOwnership", "familyMembers", "employment"],
+      7: ["sopText"],
+      8: ["hasInterviewExperience", "visaDestinationCountry", "visaStatus", "applicationYear", "rejectionReason", "deportationOrIssues", "deportationOrIssuesDetails"],
+    };
+
+    const fieldsToReset = sectionFields[sectionId] || [];
+    const updatedFormData = { ...formData };
+
+    fieldsToReset.forEach(field => {
+      updatedFormData[field] = "";
+    });
+
+    setFormData(updatedFormData);
+    
+    // Remove section from completed sections
+    setCompletedSections(prev => prev.filter(id => id !== sectionId));
+    
+    // Clear any errors for this section
+    const updatedErrors = { ...errors };
+    fieldsToReset.forEach(field => {
+      delete updatedErrors[field];
+    });
+    setErrors(updatedErrors);
+
+    console.log(`Section ${sectionId} cleared successfully`);
   };
 
   const sections = [
@@ -449,21 +620,21 @@ export default function ApplicationForm() {
   const renderSection = () => {
     switch (currentSection) {
       case 1:
-        return <PersonalDetails formData={formData} handleInputChange={handleInputChange} errors={errors} />;
+        return <PersonalDetails formData={formData} handleInputChange={handleInputChange} errors={errors} onClearSection={() => handleClearSection(1)} />;
       case 2:
-        return <EducationBackground formData={formData} handleInputChange={handleInputChange} errors={errors} />;
+        return <EducationBackground formData={formData} handleInputChange={handleInputChange} errors={errors} onClearSection={() => handleClearSection(2)} />;
       case 3:
-        return <IntendedCourse formData={formData} handleInputChange={handleInputChange} errors={errors} />;
+        return <IntendedCourse formData={formData} handleInputChange={handleInputChange} errors={errors} onClearSection={() => handleClearSection(3)} />;
       case 4:
-        return <ExamInfo formData={formData} setFormData={setFormData} errors={errors} />;
+        return <ExamInfo formData={formData} setFormData={setFormData} errors={errors} onClearSection={() => handleClearSection(4)} />;
       case 5:
-        return <FinancialProof formData={formData} handleInputChange={handleInputChange} errors={errors} />;
+        return <FinancialProof formData={formData} handleInputChange={handleInputChange} errors={errors} onClearSection={() => handleClearSection(5)} />;
       case 6:
-        return <HomeCountryTies formData={formData} handleInputChange={handleInputChange} errors={errors} />;
+        return <HomeCountryTies formData={formData} handleInputChange={handleInputChange} errors={errors} onClearSection={() => handleClearSection(6)} />;
       case 7:
-        return <StatementOfPurpose formData={formData} handleInputChange={handleInputChange} errors={errors} />;
+        return <StatementOfPurpose formData={formData} handleInputChange={handleInputChange} errors={errors} onClearSection={() => handleClearSection(7)} />;
       case 8:
-        return <InterviewHistory formData={formData} handleInputChange={handleInputChange} errors={errors} />;
+        return <InterviewHistory formData={formData} handleInputChange={handleInputChange} errors={errors} onClearSection={() => handleClearSection(8)} />;
       default:
         return null;
     }

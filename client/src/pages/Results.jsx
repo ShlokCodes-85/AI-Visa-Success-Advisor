@@ -22,6 +22,236 @@ export default function Results() {
   const [analyses, setAnalyses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+  const mockAnalyses = [
+    {
+      _id: "mock-1",
+      title: "STEM Masters - Canada",
+      percentage: 78,
+      email: "abhishek.chuttugulla@gmail.com",
+      createdAt: new Date().toISOString(),
+      formData: {
+        personalDetails: {
+          firstName: "Abhishek",
+          lastName: "Chuttugulla",
+          email: "abhishek.chuttugulla@gmail.com",
+        },
+      },
+      reasoning: [
+        {
+          factor: "Strong Academic Record",
+          impact: "positive",
+          description: "Consistent GPA and research exposure align with program requirements.",
+          weight: 0.3,
+        },
+        {
+          factor: "Clear Study Plan",
+          impact: "positive",
+          description: "SOP clearly links program outcomes to career goals in India.",
+          weight: 0.25,
+        },
+        {
+          factor: "Financial Coverage",
+          impact: "positive",
+          description: "Savings and sponsor support cover tuition and living costs.",
+          weight: 0.2,
+        },
+        {
+          factor: "Limited Work Experience",
+          impact: "negative",
+          description: "Short industry exposure may reduce perceived practical readiness.",
+          weight: 0.15,
+        },
+        {
+          factor: "University Fit",
+          impact: "positive",
+          description: "Program ranking and faculty research match the applicant's interests.",
+          weight: 0.1,
+        },
+        {
+          factor: "Language Proficiency",
+          impact: "neutral",
+          description: "Overall score meets requirements but speaking is slightly below median.",
+          weight: 0.08,
+        },
+      ],
+      improvements: [
+        {
+          category: "Work Experience",
+          suggestion: "Add internship letters highlighting relevant skills and responsibilities.",
+          priority: "medium",
+        },
+        {
+          category: "Home Country Ties",
+          suggestion: "Include property documents and family business details.",
+          priority: "high",
+        },
+        {
+          category: "SOP",
+          suggestion: "Add 2-3 measurable career milestones post-graduation.",
+          priority: "low",
+        },
+        {
+          category: "Language Proficiency",
+          suggestion: "Add a speaking-focused mock test result or tutor feedback.",
+          priority: "low",
+        },
+        {
+          category: "Research Alignment",
+          suggestion: "Mention 1-2 faculty labs and how your interests align.",
+          priority: "medium",
+        },
+      ],
+    },
+    {
+      _id: "mock-2",
+      title: "Business Analytics - UK",
+      percentage: 62,
+      email: "bhumi.upade@gmail.com",
+      createdAt: new Date(Date.now() - 86400000).toISOString(),
+      formData: {
+        personalDetails: {
+          firstName: "Bhumi",
+          lastName: "Upade",
+          email: "bhumi.upade@gmail.com",
+        },
+      },
+      reasoning: [
+        {
+          factor: "Academic Fit",
+          impact: "positive",
+          description: "Coursework aligns with analytics program prerequisites.",
+          weight: 0.25,
+        },
+        {
+          factor: "Funding Gap",
+          impact: "negative",
+          description: "Bank balance is slightly below recommended threshold.",
+          weight: 0.25,
+        },
+        {
+          factor: "Course Choice Justification",
+          impact: "neutral",
+          description: "SOP lacks specific modules and outcomes.",
+          weight: 0.2,
+        },
+        {
+          factor: "Work Experience Relevance",
+          impact: "positive",
+          description: "Analytics projects show basic tool proficiency and domain exposure.",
+          weight: 0.15,
+        },
+        {
+          factor: "Return Intent",
+          impact: "neutral",
+          description: "Post-study plan is present but missing employer linkage.",
+          weight: 0.1,
+        },
+      ],
+      improvements: [
+        {
+          category: "Financial Proof",
+          suggestion: "Provide updated bank statements or sponsor affidavits.",
+          priority: "high",
+        },
+        {
+          category: "Program Fit",
+          suggestion: "Reference 2-3 course modules relevant to your career plan.",
+          priority: "medium",
+        },
+        {
+          category: "Work Experience",
+          suggestion: "Add a portfolio link or summary of analytics projects.",
+          priority: "medium",
+        },
+        {
+          category: "Home Country Ties",
+          suggestion: "Include employer letter or offer indicating return intent.",
+          priority: "high",
+        },
+      ],
+    },
+    {
+      _id: "mock-3",
+      title: "Undergrad Transfer - USA",
+      percentage: 48,
+      email: "harsh.rathod@gmail.com",
+      createdAt: new Date(Date.now() - 172800000).toISOString(),
+      formData: {
+        personalDetails: {
+          firstName: "Harsh",
+          lastName: "Rathod",
+          email: "harsh.rathod@gmail.com",
+        },
+      },
+      reasoning: [
+        {
+          factor: "Academic Consistency",
+          impact: "negative",
+          description: "Recent transcripts show multiple gaps in coursework.",
+          weight: 0.3,
+        },
+        {
+          factor: "SOP Clarity",
+          impact: "negative",
+          description: "Motivation for transfer is vague and lacks specifics.",
+          weight: 0.25,
+        },
+        {
+          factor: "Financial Support",
+          impact: "neutral",
+          description: "Funding details are present but incomplete.",
+          weight: 0.15,
+        },
+        {
+          factor: "Transfer Rationale",
+          impact: "negative",
+          description: "Limited evidence of academic progression at current institution.",
+          weight: 0.12,
+        },
+        {
+          factor: "Extracurriculars",
+          impact: "positive",
+          description: "Strong community involvement shows leadership potential.",
+          weight: 0.08,
+        },
+      ],
+      improvements: [
+        {
+          category: "Academic Records",
+          suggestion: "Include official transcripts and explain any gaps clearly.",
+          priority: "high",
+        },
+        {
+          category: "SOP",
+          suggestion: "Clarify reasons for transfer and highlight academic goals.",
+          priority: "high",
+        },
+        {
+          category: "Financial Proof",
+          suggestion: "Add sponsor income documents and tuition payment plan.",
+          priority: "medium",
+        },
+        {
+          category: "Transfer Plan",
+          suggestion: "Map equivalent courses and show how credits will transfer.",
+          priority: "medium",
+        },
+        {
+          category: "Academic Consistency",
+          suggestion: "Add a short addendum explaining any academic gaps.",
+          priority: "high",
+        },
+      ],
+    },
+  ];
+
+  const applyMockAnalyses = (preferredId) => {
+    setAnalyses(mockAnalyses);
+    const selected = mockAnalyses.find((item) => item._id === preferredId) || mockAnalyses[0];
+    setAnalysis(selected);
+  };
 
   // Fetch specific analysis or latest analysis
   useEffect(() => {
@@ -35,92 +265,21 @@ export default function Results() {
       }
 
       const token = localStorage.getItem("token");
-      
-      // For development: Use mock data if no token
-      if (!token) {
-        // Mock data for UI preview
-        setAnalysis({
-          _id: "mock-1",
-          title: "Sample Analysis",
-          percentage: 75,
-          email: "student@example.com",
-          createdAt: new Date().toISOString(),
-          formData: {
-            personalDetails: {
-              firstName: "John",
-              lastName: "Doe",
-              email: "john.doe@example.com"
-            }
-          },
-          reasoning: [
-            {
-              factor: "Strong Academic Background",
-              impact: "positive",
-              description: "Your GPA of 3.8 demonstrates excellent academic performance which strongly supports your visa application.",
-              weight: 0.3
-            },
-            {
-              factor: "Sufficient Financial Proof",
-              impact: "positive",
-              description: "Bank statements show adequate funds to cover tuition and living expenses for the duration of your study.",
-              weight: 0.25
-            },
-            {
-              factor: "Limited Work Experience",
-              impact: "negative",
-              description: "Limited professional experience might raise questions about post-graduation plans.",
-              weight: 0.15
-            },
-            {
-              factor: "Clear Statement of Purpose",
-              impact: "positive",
-              description: "Well-articulated career goals and study objectives align well with the chosen program.",
-              weight: 0.2
-            }
-          ],
-          improvements: [
-            {
-              category: "Work Experience Documentation",
-              suggestion: "Include detailed letters from employers highlighting skills relevant to your field of study",
-              priority: "high"
-            },
-            {
-              category: "Statement of Purpose",
-              suggestion: "Add more specific examples of how the program aligns with your career trajectory",
-              priority: "medium"
-            },
-            {
-              category: "Home Country Ties",
-              suggestion: "Strengthen documentation of family connections and property ownership in home country",
-              priority: "high"
-            },
-            {
-              category: "Language Proficiency",
-              suggestion: "Consider retaking language test to improve speaking section score",
-              priority: "low"
-            }
-          ]
-        });
-        setAnalyses([
-          {
-            _id: "mock-1",
-            title: "Sample Analysis",
-            percentage: 75,
-            createdAt: new Date().toISOString()
-          },
-          {
-            _id: "mock-2",
-            title: "Previous Analysis",
-            percentage: 62,
-            createdAt: new Date(Date.now() - 86400000).toISOString()
-          },
-          {
-            _id: "mock-3",
-            title: "Initial Assessment",
-            percentage: 55,
-            createdAt: new Date(Date.now() - 172800000).toISOString()
-          }
-        ]);
+
+      // Check if this is a mock analysis ID
+      const isMockId = analysisId && analysisId.startsWith("mock-");
+
+      // Only use mock data if no token AND on localhost AND it's a mock ID
+      if (isMockId && !token && isLocalhost) {
+        applyMockAnalyses(analysisId);
+        setLoading(false);
+        return;
+      }
+
+      // If no token and not a mock ID, require authentication
+      if (!token && !isMockId) {
+        console.error("Authentication required to fetch analysis");
+        navigate("/");
         setLoading(false);
         return;
       }
@@ -128,24 +287,33 @@ export default function Results() {
       try {
         const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
         
-        if (analysisId) {
-          // Fetch specific analysis
-          const response = await fetch(`${BACKEND_URL}/api/analyses/${analysisId}`, {
+        if (analysisId && !isMockId) {
+          // Fetch specific analysis from MongoDB
+          const response = await fetch(`${BACKEND_URL}/api/analyses/${analysisId}?_t=${Date.now()}`, {
             headers: {
               "Authorization": `Bearer ${token}`,
             },
+            cache: "no-store",
           });
 
           if (response.ok) {
             const data = await response.json();
             setAnalysis(data.analysis);
-          } else {
-            console.error("Failed to fetch analysis");
+          } else if (response.status === 404) {
+            console.error("Analysis not found");
             navigate("/results");
+          } else {
+            throw new Error(`Failed to fetch analysis: ${response.statusText}`);
           }
         }
       } catch (error) {
         console.error("Error fetching analysis:", error);
+        // Only fall back to mock data if on localhost AND it's a mock ID
+        if (isMockId && isLocalhost) {
+          applyMockAnalyses(analysisId);
+        } else {
+          navigate("/results");
+        }
       } finally {
         setLoading(false);
       }
@@ -158,27 +326,64 @@ export default function Results() {
   useEffect(() => {
     const fetchAnalyses = async () => {
       const token = localStorage.getItem("token");
-      if (!token) return;
+      if (!token) {
+        // Only show mock data on localhost when no token
+        if (isLocalhost) {
+          setAnalyses(mockAnalyses);
+          if (!analysisId) {
+            navigate(`/results/${mockAnalyses[0]._id}`);
+          }
+        }
+        return;
+      }
 
       try {
         const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-        const response = await fetch(`${BACKEND_URL}/api/analyses`, {
+        const response = await fetch(`${BACKEND_URL}/api/analyses?_t=${Date.now()}`, {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
+          cache: "no-store",
         });
+
+        if (response.status === 204) {
+          console.warn("[RESULTS] API returned 204 No Content for /api/analyses");
+          setAnalyses([]);
+          return;
+        }
 
         if (response.ok) {
           const data = await response.json();
-          setAnalyses(data.analyses);
+            console.log("[RESULTS] API Response:", data);
+            console.log("[RESULTS] Analyses array:", data.analyses);
+            console.log("[RESULTS] Number of analyses:", data.analyses?.length || 0);
           
-          // If no specific analysis is loaded, load the latest one
-          if (!analysisId && data.analyses.length > 0) {
-            navigate(`/results/${data.analyses[0]._id}`);
+            if (data.analyses && data.analyses.length > 0) {
+            setAnalyses(data.analyses);
+
+            // If no specific analysis is loaded, load the latest one
+            if (!analysisId) {
+              navigate(`/results/${data.analyses[0]._id}`);
+            }
+          } else {
+            // Empty result from API (user has no analyses yet)
+            console.log("No analyses found for user");
+              console.log("[RESULTS] Full API response when empty:", JSON.stringify(data));
+            setAnalyses([]);
           }
+        } else {
+            console.error("[RESULTS] API returned non-OK status:", response.status, response.statusText);
+          throw new Error(`Failed to fetch analyses: ${response.statusText}`);
         }
       } catch (error) {
         console.error("Error fetching analyses:", error);
+        // Only fallback to mock on localhost when there's an error
+        if (isLocalhost) {
+          setAnalyses(mockAnalyses);
+          if (!analysisId) {
+            navigate(`/results/${mockAnalyses[0]._id}`);
+          }
+        }
       }
     };
 
@@ -186,155 +391,192 @@ export default function Results() {
   }, [analysisId, navigate]);
 
   const handleDownloadPDF = () => {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.width;
-    const pageHeight = doc.internal.pageSize.height;
-    let yPosition = 20;
+    if (!analysis) {
+      alert("No analysis data available to download");
+      return;
+    }
 
-    // Header with branding
-    doc.setFillColor(37, 99, 235); // Blue color
-    doc.rect(0, 0, pageWidth, 40, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(24);
-    doc.setFont(undefined, 'bold');
-    doc.text('AI Visa Success Advisor', pageWidth / 2, 20, { align: 'center' });
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'normal');
-    doc.text('Comprehensive Analysis Report', pageWidth / 2, 30, { align: 'center' });
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.width;
+      const pageHeight = doc.internal.pageSize.height;
+      const margin = 14;
+      const contentWidth = pageWidth - 2 * margin;
+      let yPosition = 20;
 
-    yPosition = 50;
+      // Header with branding
+      doc.setFillColor(37, 99, 235);
+      doc.rect(0, 0, pageWidth, 40, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(24);
+      doc.setFont(undefined, 'bold');
+      doc.text('AI Visa Success Advisor', pageWidth / 2, 20, { align: 'center' });
+      doc.setFontSize(12);
+      doc.setFont(undefined, 'normal');
+      doc.text('Comprehensive Analysis Report', pageWidth / 2, 30, { align: 'center' });
 
-    // User Information Section
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(16);
-    doc.setFont(undefined, 'bold');
-    doc.text('Applicant Information', 14, yPosition);
-    yPosition += 10;
+      yPosition = 50;
 
-    doc.setFontSize(11);
-    doc.setFont(undefined, 'normal');
-    const userName = analysis.formData?.personalDetails?.firstName && analysis.formData?.personalDetails?.lastName 
-      ? `${analysis.formData.personalDetails.firstName} ${analysis.formData.personalDetails.lastName}`
-      : analysis.formData?.personalDetails?.fullName || "Not Provided";
-    const userEmail = analysis.formData?.personalDetails?.email || analysis.email || "Not Provided";
-    const analysisDate = new Date(analysis.createdAt).toLocaleDateString('en-US', { 
-      year: 'numeric', month: 'long', day: 'numeric' 
-    });
+      // User Information Section with Percentage Circle
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(16);
+      doc.setFont(undefined, 'bold');
+      doc.text('Applicant Information', margin, yPosition);
+      yPosition += 10;
 
-    doc.text(`Name: ${userName}`, 14, yPosition);
-    yPosition += 7;
-    doc.text(`Email: ${userEmail}`, 14, yPosition);
-    yPosition += 7;
-    doc.text(`Analysis Date: ${analysisDate}`, 14, yPosition);
-    yPosition += 15;
-
-    // Success Probability Section with colored box
-    const percentage = analysis.percentage;
-    const statusColor = percentage >= 70 ? [16, 185, 129] : percentage >= 40 ? [234, 179, 8] : [239, 68, 68];
-    const statusText = percentage >= 70 ? "Excellent Approval Chances" : percentage >= 40 ? "Moderate Approval Chances" : "Needs Improvement";
-
-    doc.setFillColor(...statusColor);
-    doc.roundedRect(14, yPosition, pageWidth - 28, 25, 3, 3, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(18);
-    doc.setFont(undefined, 'bold');
-    doc.text(`${percentage}%`, pageWidth / 2, yPosition + 10, { align: 'center' });
-    doc.setFontSize(12);
-    doc.text(statusText, pageWidth / 2, yPosition + 20, { align: 'center' });
-    yPosition += 35;
-
-    // AI Reasoning Section
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(16);
-    doc.setFont(undefined, 'bold');
-    doc.text('AI Reasoning & Key Factors', 14, yPosition);
-    yPosition += 10;
-
-    if (analysis.reasoning && analysis.reasoning.length > 0) {
-      const reasoningData = analysis.reasoning.map((item, index) => [
-        index + 1,
-        item.factor,
-        item.impact.charAt(0).toUpperCase() + item.impact.slice(1),
-        item.weight ? `${(item.weight * 100).toFixed(0)}%` : 'N/A',
-        item.description
-      ]);
-
-      doc.autoTable({
-        startY: yPosition,
-        head: [['#', 'Factor', 'Impact', 'Weight', 'Description']],
-        body: reasoningData,
-        theme: 'striped',
-        headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' },
-        columnStyles: {
-          0: { cellWidth: 10 },
-          1: { cellWidth: 35 },
-          2: { cellWidth: 20 },
-          3: { cellWidth: 15 },
-          4: { cellWidth: 'auto' }
-        },
-        styles: { fontSize: 9, cellPadding: 3 }
+      doc.setFontSize(11);
+      doc.setFont(undefined, 'normal');
+      // Prioritize real form input data over mock/OAuth data
+      const userName = analysis.formData?.fullName || ((analysis.formData?.personalDetails?.firstName && analysis.formData?.personalDetails?.lastName) ? `${analysis.formData.personalDetails.firstName} ${analysis.formData.personalDetails.lastName}`.trim() : "Not Provided");
+      const userEmail = analysis.formData?.contactEmail || analysis.formData?.personalDetails?.email || analysis.email || "Not Provided";
+      const analysisDate = new Date(analysis.createdAt).toLocaleDateString('en-US', { 
+        year: 'numeric', month: 'long', day: 'numeric' 
       });
-      yPosition = doc.lastAutoTable.finalY + 15;
-    } else {
-      doc.setFontSize(10);
-      doc.setFont(undefined, 'italic');
-      doc.text('No reasoning data available.', 14, yPosition);
+      const percentage = analysis.percentage;
+      const statusColor = percentage >= 70 ? [16, 185, 129] : percentage >= 40 ? [234, 179, 8] : [239, 68, 68];
+
+      // User info on the left
+      const infoLeftX = margin;
+      const circleRightX = pageWidth - margin - 25;
+      const circleTopY = yPosition - 2;
+
+      doc.text(`Name: ${userName}`, infoLeftX, yPosition);
+      yPosition += 7;
+      doc.text(`Email: ${userEmail}`, infoLeftX, yPosition);
+      yPosition += 7;
+      doc.text(`Analysis Date: ${analysisDate}`, infoLeftX, yPosition);
+
+      // Draw circular percentage indicator on the right
+      const circleRadius = 12;
+      const circleCenterX = circleRightX;
+      const circleCenterY = circleTopY + circleRadius;
+
+      // Outer circle background
+      doc.setFillColor(220, 220, 220);
+      doc.circle(circleCenterX, circleCenterY, circleRadius, 'F');
+
+      // Colored inner circle
+      doc.setFillColor(...statusColor);
+      doc.circle(circleCenterX, circleCenterY, circleRadius - 2, 'F');
+
+      // Percentage text
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text(`${percentage}%`, circleCenterX, circleCenterY + 1, { align: 'center' });
+
       yPosition += 15;
-    }
 
-    // Check if we need a new page
-    if (yPosition > pageHeight - 60) {
-      doc.addPage();
-      yPosition = 20;
-    }
-
-    // Recommended Improvements Section
-    doc.setFontSize(16);
-    doc.setFont(undefined, 'bold');
-    doc.text('Recommended Improvements', 14, yPosition);
-    yPosition += 10;
-
-    if (analysis.improvements && analysis.improvements.length > 0) {
-      const improvementsData = analysis.improvements.map((item, index) => [
-        index + 1,
-        item.category,
-        item.priority.charAt(0).toUpperCase() + item.priority.slice(1),
-        item.suggestion
-      ]);
-
-      doc.autoTable({
-        startY: yPosition,
-        head: [['#', 'Category', 'Priority', 'Suggestion']],
-        body: improvementsData,
-        theme: 'striped',
-        headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' },
-        columnStyles: {
-          0: { cellWidth: 10 },
-          1: { cellWidth: 40 },
-          2: { cellWidth: 20 },
-          3: { cellWidth: 'auto' }
-        },
-        styles: { fontSize: 9, cellPadding: 3 }
-      });
-      yPosition = doc.lastAutoTable.finalY + 15;
-    } else {
+      // Status text below user info
+      const statusText = percentage >= 70 ? "Excellent Approval Chances" : percentage >= 40 ? "Moderate Approval Chances" : "Needs Improvement";
       doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(...statusColor);
+      doc.text(`Status: ${statusText}`, margin, yPosition);
+      yPosition += 12;
+
+      // AI Reasoning Section
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(16);
+      doc.setFont(undefined, 'bold');
+      doc.text('AI Reasoning & Key Factors', margin, yPosition);
+      yPosition += 10;
+
+      if (analysis.reasoning && analysis.reasoning.length > 0) {
+        doc.setFontSize(9);
+        doc.setFont(undefined, 'normal');
+        analysis.reasoning.forEach((item, index) => {
+          if (yPosition > pageHeight - 40) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          
+          const impact = item.impact.charAt(0).toUpperCase() + item.impact.slice(1);
+          const weight = item.weight ? `${(item.weight * 100).toFixed(0)}%` : 'N/A';
+          
+          doc.setFont(undefined, 'bold');
+          doc.text(`${index + 1}. ${item.factor}`, margin, yPosition);
+          yPosition += 5;
+          
+          doc.setFont(undefined, 'normal');
+          doc.setFontSize(8);
+          doc.text(`Impact: ${impact} | Weight: ${weight}`, margin + 5, yPosition);
+          yPosition += 4;
+          
+          const wrappedDescription = doc.splitTextToSize(item.description, contentWidth - 10);
+          doc.text(wrappedDescription, margin + 5, yPosition);
+          yPosition += wrappedDescription.length * 4 + 5;
+          
+          doc.setFontSize(9);
+        });
+      } else {
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'italic');
+        doc.text('No reasoning data available.', margin, yPosition);
+        yPosition += 10;
+      }
+
+      yPosition += 5;
+
+      // Check if we need a new page
+      if (yPosition > pageHeight - 60) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      // Recommended Improvements Section
+      doc.setFontSize(16);
+      doc.setFont(undefined, 'bold');
+      doc.text('Recommended Improvements', margin, yPosition);
+      yPosition += 10;
+
+      if (analysis.improvements && analysis.improvements.length > 0) {
+        doc.setFontSize(9);
+        doc.setFont(undefined, 'normal');
+        analysis.improvements.forEach((item, index) => {
+          if (yPosition > pageHeight - 40) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          
+          const priority = item.priority.charAt(0).toUpperCase() + item.priority.slice(1);
+          
+          doc.setFont(undefined, 'bold');
+          doc.text(`${index + 1}. ${item.category}`, margin, yPosition);
+          yPosition += 5;
+          
+          doc.setFont(undefined, 'normal');
+          doc.setFontSize(8);
+          doc.text(`Priority: ${priority}`, margin + 5, yPosition);
+          yPosition += 4;
+          
+          const wrappedSuggestion = doc.splitTextToSize(item.suggestion, contentWidth - 10);
+          doc.text(wrappedSuggestion, margin + 5, yPosition);
+          yPosition += wrappedSuggestion.length * 4 + 5;
+          
+          doc.setFontSize(9);
+        });
+      } else {
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'italic');
+        doc.text('No improvements suggested at this time.', margin, yPosition);
+        yPosition += 10;
+      }
+
+      // Footer
+      const footerY = pageHeight - 15;
+      doc.setFontSize(8);
+      doc.setTextColor(128, 128, 128);
       doc.setFont(undefined, 'italic');
-      doc.text('No improvements suggested at this time.', 14, yPosition);
-      yPosition += 15;
+      doc.text('Generated by AI Visa Success Advisor - This analysis is for informational purposes only.', pageWidth / 2, footerY, { align: 'center' });
+
+      // Save the PDF
+      const fileName = `Visa_Analysis_${userName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      doc.save(fileName);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Error generating PDF: " + error.message);
     }
-
-    // Footer
-    const footerY = pageHeight - 20;
-    doc.setFontSize(8);
-    doc.setTextColor(128, 128, 128);
-    doc.setFont(undefined, 'italic');
-    doc.text('Generated by AI Visa Success Advisor - This analysis is for informational purposes only.', pageWidth / 2, footerY, { align: 'center' });
-    doc.text(`Report ID: ${analysis._id}`, pageWidth / 2, footerY + 5, { align: 'center' });
-
-    // Save the PDF
-    const fileName = `Visa_Analysis_${userName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
-    doc.save(fileName);
   };
 
   const formatDate = (dateString) => {
@@ -438,11 +680,8 @@ export default function Results() {
               <div className="flex-shrink-0 flex-1">
                 <PercentageCircle 
                   percentage={analysis.percentage}
-                  userName={analysis.formData?.personalDetails?.firstName && analysis.formData?.personalDetails?.lastName 
-                    ? `${analysis.formData.personalDetails.firstName} ${analysis.formData.personalDetails.lastName}`
-                    : analysis.formData?.personalDetails?.fullName || "User"
-                  }
-                  userEmail={analysis.formData?.personalDetails?.email || analysis.email || "user@example.com"}
+                  userName={analysis.formData?.fullName || ((analysis.formData?.personalDetails?.firstName && analysis.formData?.personalDetails?.lastName) ? `${analysis.formData.personalDetails.firstName} ${analysis.formData.personalDetails.lastName}` : "User")}
+                  userEmail={analysis.formData?.contactEmail || analysis.formData?.personalDetails?.email || analysis.email || "user@example.com"}
                 />
               </div>
 
@@ -478,11 +717,11 @@ export default function Results() {
                   <div className="space-y-3">
                     <div>
                       <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">Full Name</p>
-                      <p className="text-lg font-semibold text-gray-900 dark:text-white mt-1">{analysis.formData?.personalDetails?.firstName && analysis.formData?.personalDetails?.lastName ? `${analysis.formData.personalDetails.firstName} ${analysis.formData.personalDetails.lastName}` : analysis.formData?.personalDetails?.fullName || "Not Provided"}</p>
+                      <p className="text-lg font-semibold text-gray-900 dark:text-white mt-1">{analysis.formData?.fullName || ((analysis.formData?.personalDetails?.firstName && analysis.formData?.personalDetails?.lastName) ? `${analysis.formData.personalDetails.firstName} ${analysis.formData.personalDetails.lastName}` : "Not Provided")}</p>
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">Email Address</p>
-                      <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 break-all">{analysis.formData?.personalDetails?.email || analysis.email || "Not Provided"}</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 break-all">{analysis.formData?.contactEmail || analysis.formData?.personalDetails?.email || analysis.email || "Not Provided"}</p>
                     </div>
                   </div>
                 </div>

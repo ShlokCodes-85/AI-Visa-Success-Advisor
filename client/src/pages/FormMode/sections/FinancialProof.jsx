@@ -1,12 +1,25 @@
+import { X } from 'lucide-react';
 import { getAllCurrencies, getCurrencyDetails, getCurrencyDisplay } from "../../../utils/currencyData";
 
-export default function FinancialProof({ formData, handleInputChange, errors = {} }) {
+export default function FinancialProof({ formData, handleInputChange, errors = {}, onClearSection }) {
   const currencies = getAllCurrencies();
   const selectedCurrency = formData.requiredCurrency ? getCurrencyDetails(formData.requiredCurrency) : null;
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Financial Proof</h2>
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Financial Proof</h2>
+        {onClearSection && (
+          <button
+            onClick={onClearSection}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg border border-red-300 dark:border-red-700 transition-all"
+            title="Clear this section"
+          >
+            <X className="w-4 h-4" />
+            <span>Clear Section</span>
+          </button>
+        )}
+      </div>
       <p className="text-gray-600 dark:text-gray-300 mb-8">Please provide your financial information for the visa application.</p>
 
       {/* Currency Selection */}
@@ -32,11 +45,11 @@ export default function FinancialProof({ formData, handleInputChange, errors = {
         </select>
       </div>
 
-      {/* Required Funding Amount */}
+      {/* College-Required Amount (I-20 for One Year) */}
       {formData.requiredCurrency && (
         <div className="mb-8 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Required Funding Amount (from College Document)</label>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">Enter the amount mentioned in your college requirement document</p>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">College-Required Amount (I-20 for One Year)</label>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">Enter the amount mentioned in your I-20 for one year (tuition + living expenses).</p>
           <div className="flex items-center gap-2">
             <span className="text-2xl font-bold">{selectedCurrency?.flag}</span>
             <span className="text-xl font-bold text-gray-700 dark:text-gray-300 min-w-[60px]">{selectedCurrency?.symbol}</span>
@@ -45,7 +58,7 @@ export default function FinancialProof({ formData, handleInputChange, errors = {
               name="requiredFunding"
               value={formData.requiredFunding || ""}
               onChange={handleInputChange}
-              placeholder="Enter amount"
+              placeholder="Enter I-20 one-year amount"
               className={`flex-1 px-4 py-3 border ${
                 errors.requiredFunding ? "border-red-500" : "border-transparent dark:border-gray-600"
               } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400`}

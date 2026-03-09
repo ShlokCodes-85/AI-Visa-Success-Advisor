@@ -5,6 +5,15 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import dotenv from "dotenv";
+
+// Load environment variables FIRST before any other imports
+dotenv.config();
+
+console.log("[STARTUP] Environment variables loaded");
+console.log("[STARTUP] GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID ? "✓ set" : "✗ NOT SET");
+console.log("[STARTUP] GITHUB_CLIENT_ID:", process.env.GITHUB_CLIENT_ID ? "✓ set" : "✗ NOT SET");
+console.log("[STARTUP] GEMINI_API_KEY:", process.env.GEMINI_API_KEY ? "✓ set" : "✗ NOT SET");
+
 import authRoutes from "./routes/auth.js";
 import chatRoutes from "./routes/chats.js";
 import aiChatRoutes from "./routes/ai-chat.js";
@@ -12,9 +21,6 @@ import applicationRoutes from "./routes/applications.js";
 import subscriptionRoutes from "./routes/subscriptions.js";
 import analysisRoutes from "./routes/analyses.js";
 import { configurePassport } from "./config/passport.js";
-
-// Load environment variables
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,7 +34,10 @@ app.use(
   cors({
     origin: function (origin, callback) {
       const allowedOrigins = [
-        process.env.CLIENT_URL
+        process.env.CLIENT_URL_LOCAL,
+        process.env.CLIENT_URL,
+        "http://localhost:5173",
+        "http://localhost:3000",
       ];
       
       if (!origin || allowedOrigins.includes(origin)) {

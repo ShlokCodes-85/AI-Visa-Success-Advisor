@@ -152,10 +152,18 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
+// Helper to get the correct frontend URL
+const getClientUrl = () => {
+  return process.env.NODE_ENV === "production" ? process.env.CLIENT_URL : (process.env.CLIENT_URL_LOCAL || "http://localhost:5173");
+};
+
 router.get(
   "/google/callback",
   passport.authenticate("google", { 
-    failureRedirect: `${process.env.CLIENT_URL}/?error=oauth_failed`,
+    failureRedirect: (req, res, err) => {
+      const clientUrl = getClientUrl();
+      return res.redirect(`${clientUrl}/?error=oauth_failed`);
+    },
     session: true 
   }),
   (req, res) => {
@@ -168,10 +176,12 @@ router.get(
       );
 
       // Redirect to frontend with token
-      res.redirect(`${process.env.CLIENT_URL}/?token=${token}`);
+      const clientUrl = getClientUrl();
+      res.redirect(`${clientUrl}/?token=${token}`);
     } catch (error) {
       console.error("Google OAuth callback error:", error);
-      res.redirect(`${process.env.CLIENT_URL}/?error=token_generation_failed`);
+      const clientUrl = getClientUrl();
+      res.redirect(`${clientUrl}/?error=token_generation_failed`);
     }
   }
 );
@@ -185,7 +195,10 @@ router.get(
 router.get(
   "/github/callback",
   passport.authenticate("github", { 
-    failureRedirect: `${process.env.CLIENT_URL}/?error=oauth_failed`,
+    failureRedirect: (req, res, err) => {
+      const clientUrl = getClientUrl();
+      return res.redirect(`${clientUrl}/?error=oauth_failed`);
+    },
     session: true 
   }),
   (req, res) => {
@@ -198,10 +211,12 @@ router.get(
       );
 
       // Redirect to frontend with token
-      res.redirect(`${process.env.CLIENT_URL}/?token=${token}`);
+      const clientUrl = getClientUrl();
+      res.redirect(`${clientUrl}/?token=${token}`);
     } catch (error) {
       console.error("GitHub OAuth callback error:", error);
-      res.redirect(`${process.env.CLIENT_URL}/?error=token_generation_failed`);
+      const clientUrl = getClientUrl();
+      res.redirect(`${clientUrl}/?error=token_generation_failed`);
     }
   }
 );
@@ -442,6 +457,127 @@ router.post("/reset-password/:token", async (req, res) => {
   } catch (error) {
     console.error("Reset password error:", error);
     res.status(500).json({ message: "Server error resetting password" });
+  }
+});
+
+// Change Password - For users who already have a password (protected route)
+router.post("/change-password", async (req, res) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "Access token required" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Both current and new passwords are required" });
+    }
+
+    // Find user
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if user has a password (should be true for this endpoint)
+    if (!user.password) {
+      return res.status(400).json({ message: "This account does not have a password set" });
+    }
+
+    // Verify current password
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    if (currentPassword === newPassword) {
+      return res.status(400).json({ message: "New password must be different from current password" });
+    }
+
+    // Validate new password
+    const passwordErrors = validatePassword(newPassword);
+    if (passwordErrors.length > 0) {
+      return res.status(400).json({ 
+        message: "New password does not meet requirements",
+        errors: passwordErrors 
+      });
+    }
+
+    // Hash and update new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ message: "Password changed successfully" });
+
+  } catch (error) {
+    console.error("Change password error:", error);
+    res.status(500).json({ message: "Server error changing password" });
+  }
+});
+
+// Add Password - For OAuth users to set a password (protected route)
+router.post("/add-password", async (req, res) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "Access token required" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { password, confirmPassword } = req.body;
+
+    if (!password || !confirmPassword) {
+      return res.status(400).json({ message: "Both password fields are required" });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // Find user
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if user already has a password
+    if (user.password) {
+      return res.status(400).json({ message: "This account already has a password set" });
+    }
+
+    // Validate password
+    const passwordErrors = validatePassword(password);
+    if (passwordErrors.length > 0) {
+      return res.status(400).json({ 
+        message: "Password does not meet requirements",
+        errors: passwordErrors 
+      });
+    }
+
+    // Hash and set password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ message: "Password added successfully. You can now sign in with email and password." });
+
+  } catch (error) {
+    console.error("Add password error:", error);
+    res.status(500).json({ message: "Server error adding password" });
   }
 });
 
