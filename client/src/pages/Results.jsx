@@ -22,7 +22,9 @@ export default function Results() {
   const [analyses, setAnalyses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const enableMocksEnv = import.meta.env.VITE_ENABLE_MOCKS === "true";
   const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  const allowMocks = enableMocksEnv || isLocalhost;
 
   const mockAnalyses = [
     {
@@ -269,8 +271,8 @@ export default function Results() {
       // Check if this is a mock analysis ID
       const isMockId = analysisId && analysisId.startsWith("mock-");
 
-      // Only use mock data if no token AND on localhost AND it's a mock ID
-      if (isMockId && !token && isLocalhost) {
+      // Only use mock data if no token AND mocks are allowed AND it's a mock ID
+      if (isMockId && !token && allowMocks) {
         applyMockAnalyses(analysisId);
         setLoading(false);
         return;
@@ -308,8 +310,8 @@ export default function Results() {
         }
       } catch (error) {
         console.error("Error fetching analysis:", error);
-        // Only fall back to mock data if on localhost AND it's a mock ID
-        if (isMockId && isLocalhost) {
+        // Only fall back to mock data if mocks are allowed AND it's a mock ID
+        if (isMockId && allowMocks) {
           applyMockAnalyses(analysisId);
         } else {
           navigate("/results");
@@ -327,8 +329,8 @@ export default function Results() {
     const fetchAnalyses = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        // Only show mock data on localhost when no token
-        if (isLocalhost) {
+        // Only show mock data when mocks are allowed and no token
+        if (allowMocks) {
           setAnalyses(mockAnalyses);
           if (!analysisId) {
             navigate(`/results/${mockAnalyses[0]._id}`);
@@ -377,8 +379,8 @@ export default function Results() {
         }
       } catch (error) {
         console.error("Error fetching analyses:", error);
-        // Only fallback to mock on localhost when there's an error
-        if (isLocalhost) {
+        // Only fallback to mock when mocks are allowed and there's an error
+        if (allowMocks) {
           setAnalyses(mockAnalyses);
           if (!analysisId) {
             navigate(`/results/${mockAnalyses[0]._id}`);
