@@ -291,7 +291,7 @@ export default function AppNavBar({
         </h1>
         {/* Segmented Mode Switch Button (Form/Chat) for tablet and desktop - centered */}
         <div className="hidden md:flex flex-1 justify-center z-10">
-          <div className="flex flex-row items-center gap-0 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-1.5 shadow-sm">
+          <div className="flex flex-row items-center gap-1.5 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-1.5 shadow-sm">
             <button
               onClick={() => mode !== "form" && setMode("form")}
               className={`flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 rounded-full text-sm font-semibold transition-all focus:outline-none

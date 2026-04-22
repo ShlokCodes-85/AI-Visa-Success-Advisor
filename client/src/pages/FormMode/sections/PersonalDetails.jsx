@@ -61,6 +61,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
           onChange={handleInputChange}
           placeholder="John Doe"
           error={errors.fullName}
+          className="h-14"
         />
 
         <div>
@@ -75,11 +76,11 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
               value={formData.dateOfBirth}
               onChange={handleInputChange}
               max={new Date().toISOString().split('T')[0]}
-              className={`w-full px-4 py-3 border ${
+              className={`w-full h-14 px-4 py-3 border ${
                 errors.dateOfBirth ? "border-red-500" : "border-transparent dark:border-gray-600"
               } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all cursor-pointer`}
             />
-            <Calendar className="absolute right-4 top-3.5 w-5 h-5 text-black dark:text-gray-300 pointer-events-none" />
+            <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black dark:text-gray-300 pointer-events-none" />
           </div>
         </div>
 
@@ -92,7 +93,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             name="gender"
             value={formData.gender || ''}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+            className={`w-full h-14 px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
               ${errors.gender
                 ? "border-red-500 focus:border-red-500"
                 : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
@@ -113,6 +114,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
           onChange={handleInputChange}
           placeholder="john.doe@example.com"
           error={errors.contactEmail}
+          className="h-14"
         />
 
         <FormField
@@ -123,6 +125,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
           onChange={handleInputChange}
           placeholder="+91 80970 58099"
           error={errors.phoneNumber}
+          className="h-14"
         />
 
         <div>
@@ -134,7 +137,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             name="nationality"
             value={formData.nationality}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+            className={`w-full h-14 px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
               ${errors.nationality
                 ? "border-red-500 focus:border-red-500"
                 : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
@@ -157,7 +160,7 @@ export default function PersonalDetails({ formData, handleInputChange, errors = 
             name="countryOfResidency"
             value={formData.countryOfResidency || ''}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+            className={`w-full h-14 px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
               ${errors.countryOfResidency
                 ? "border-red-500 focus:border-red-500"
                 : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}

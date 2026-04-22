@@ -4,42 +4,42 @@ function Testimonials() {
   const { elementRef, isVisible } = useLazyLoad();
   const testimonials = [
     {
-      name: "Aisha Khan",
+      name: "Maya Patel",
       location: "Beta Tester",
       quote:
         "Early access gave me the chance to test the form validator before launch. The feedback was incredibly helpful for understanding what a strong application looks like.",
       focus: "Form Mode"
     },
     {
-      name: "David Chen",
+      name: "Arjun Mehta",
       location: "Early Access User",
       quote:
         "As a beta tester, I really appreciated how the platform helped me identify gaps in my application documents early on.",
       focus: "Form Mode"
     },
     {
-      name: "Emma Rodriguez",
+      name: "Sofia Martinez",
       location: "Beta Tester",
       quote:
         "Being part of the early access program let me explore the chatbot feature while it was still in development. Valuable experience!",
       focus: "Chat Mode"
     },
     {
-      name: "Samuel Wright",
+      name: "Noah Bennett",
       location: "Early Access User",
       quote:
         "I enjoyed testing the success score metrics as a beta user. The interface is intuitive and the explanations are really clear.",
       focus: "Form Mode"
     },
     {
-      name: "Li Na",
+      name: "Priya Nair",
       location: "Beta Tester",
       quote:
         "The chatbot rehearsal feature worked great during our early access testing. It's a solid tool for interview prep.",
       focus: "Chat Mode"
     },
     {
-      name: "Omar El-Sayed",
+      name: "Zain Hassan",
       location: "Early Access User",
       quote:
         "Testing the platform as a beta user was a great way to see how it evolves. The support team was responsive to feedback.",
