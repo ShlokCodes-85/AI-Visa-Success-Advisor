@@ -39,7 +39,7 @@ export default function EducationBackground({ formData, handleInputChange, error
             name="educationLevel"
             value={formData.educationLevel}
             onChange={handleInputChange}
-            className={`w-full h-14 px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+            className={`w-full px-4 py-3 min-h-[48px] sm:min-h-[56px] md:min-h-[64px] lg:min-h-[72px] xl:min-h-[80px] text-base sm:text-base md:text-lg border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
               ${errors.educationLevel
                 ? "border-red-500 focus:border-red-500"
                 : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
@@ -60,7 +60,6 @@ export default function EducationBackground({ formData, handleInputChange, error
           onChange={handleInputChange}
           placeholder="e.g., University of Mumbai"
           error={errors.institution}
-          className="h-14"
         />
 
         <FormField
@@ -70,7 +69,6 @@ export default function EducationBackground({ formData, handleInputChange, error
           onChange={handleInputChange}
           placeholder="e.g., Computer Science"
           error={errors.fieldOfStudy}
-          className="h-14"
         />
 
         <div>
@@ -82,7 +80,7 @@ export default function EducationBackground({ formData, handleInputChange, error
             name="graduationYear"
             value={formData.graduationYear}
             onChange={handleInputChange}
-            className={`w-full h-14 px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+            className={`w-full px-4 py-3 min-h-[48px] sm:min-h-[56px] md:min-h-[64px] lg:min-h-[72px] xl:min-h-[80px] text-base sm:text-base md:text-lg border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
               ${errors.graduationYear
                 ? "border-red-500 focus:border-red-500"
                 : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
@@ -106,7 +104,7 @@ export default function EducationBackground({ formData, handleInputChange, error
             name="gpaScale"
             value={formData.gpaScale || ""}
             onChange={handleInputChange}
-            className={`w-full h-14 px-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
+            className={`w-full px-4 py-3 min-h-[48px] sm:min-h-[56px] md:min-h-[64px] lg:min-h-[72px] xl:min-h-[80px] text-base sm:text-base md:text-lg border rounded-lg bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all
               ${errors.gpaScale
                 ? "border-red-500 focus:border-red-500"
                 : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"}
@@ -135,7 +133,7 @@ export default function EducationBackground({ formData, handleInputChange, error
             onChange={handleInputChange}
             placeholder={`e.g., ${formData.gpaScale === "100" ? "85" : "3.8"}`}
             disabled={!formData.gpaScale}
-            className={`w-full h-14 px-4 py-3 border ${
+            className={`w-full px-4 py-3 min-h-[48px] sm:min-h-[56px] md:min-h-[64px] lg:min-h-[72px] xl:min-h-[80px] text-base sm:text-base md:text-lg border ${
               errors.gpa ? "border-red-500" : "border-transparent dark:border-gray-600"
             } bg-white dark:bg-gray-800 text-black dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-500 dark:placeholder-gray-400 ${
               !formData.gpaScale ? "opacity-50 cursor-not-allowed" : ""
