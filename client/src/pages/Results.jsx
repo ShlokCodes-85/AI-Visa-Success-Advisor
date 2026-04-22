@@ -22,12 +22,9 @@ export default function Results() {
   const [analyses, setAnalyses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-<<<<<<< HEAD
-=======
   const enableMocksEnv = import.meta.env.VITE_ENABLE_MOCKS === "true";
   const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const allowMocks = enableMocksEnv || isLocalhost;
->>>>>>> 7f83c28f394276f1ee594bdd3904dd7f55740354
 
   const mockAnalyses = [
     {
@@ -274,13 +271,7 @@ export default function Results() {
       // Check if this is a mock analysis ID
       const isMockId = analysisId && analysisId.startsWith("mock-");
 
-<<<<<<< HEAD
-      // Use dummy data whenever a mock analysis is requested
-      if (isMockId) {
-=======
-      // Only use mock data if no token AND mocks are allowed AND it's a mock ID
       if (isMockId && !token && allowMocks) {
->>>>>>> 7f83c28f394276f1ee594bdd3904dd7f55740354
         applyMockAnalyses(analysisId);
         setLoading(false);
         return;
@@ -288,7 +279,12 @@ export default function Results() {
 
       // If no token, fall back to dummy data for preview mode
       if (!token) {
-        applyMockAnalyses(analysisId);
+        if (allowMocks) {
+          setAnalyses(mockAnalyses);
+          if (!analysisId) {
+            navigate(`/results/${mockAnalyses[0]._id}`);
+          }
+        }
         setLoading(false);
         return;
       }
@@ -317,16 +313,12 @@ export default function Results() {
         }
       } catch (error) {
         console.error("Error fetching analysis:", error);
-<<<<<<< HEAD
-        applyMockAnalyses(analysisId);
-=======
         // Only fall back to mock data if mocks are allowed AND it's a mock ID
         if (isMockId && allowMocks) {
           applyMockAnalyses(analysisId);
         } else {
           navigate("/results");
         }
->>>>>>> 7f83c28f394276f1ee594bdd3904dd7f55740354
       } finally {
         setLoading(false);
       }
@@ -340,18 +332,12 @@ export default function Results() {
     const fetchAnalyses = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-<<<<<<< HEAD
-        setAnalyses(mockAnalyses);
-        if (!analysisId) {
-          navigate(`/results/${mockAnalyses[0]._id}`);
-=======
         // Only show mock data when mocks are allowed and no token
         if (allowMocks) {
           setAnalyses(mockAnalyses);
           if (!analysisId) {
             navigate(`/results/${mockAnalyses[0]._id}`);
           }
->>>>>>> 7f83c28f394276f1ee594bdd3904dd7f55740354
         }
         return;
       }
@@ -396,18 +382,12 @@ export default function Results() {
         }
       } catch (error) {
         console.error("Error fetching analyses:", error);
-<<<<<<< HEAD
-        setAnalyses(mockAnalyses);
-        if (!analysisId) {
-          navigate(`/results/${mockAnalyses[0]._id}`);
-=======
         // Only fallback to mock when mocks are allowed and there's an error
         if (allowMocks) {
           setAnalyses(mockAnalyses);
           if (!analysisId) {
             navigate(`/results/${mockAnalyses[0]._id}`);
           }
->>>>>>> 7f83c28f394276f1ee594bdd3904dd7f55740354
         }
       }
     };
