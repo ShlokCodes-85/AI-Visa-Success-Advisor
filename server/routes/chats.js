@@ -20,6 +20,7 @@ router.post("/", async (req, res) => {
     
     const chat = await Chat.create({
       userId: req.user.id,
+      email: req.user.email || "",
       title: title.trim(),
       messages: [],
     });
@@ -46,7 +47,15 @@ router.get("/", async (req, res) => {
   try {
     console.log(`[FETCH CHATS] User ${req.user.id} requesting their chats`);
     
-    const chats = await Chat.find({ userId: req.user.id })
+    // Allow lookup by userId or email (supports sessions where user id may differ)
+    const ownershipFilter = {
+      $or: [
+        { userId: req.user.id },
+        ...(req.user.email ? [{ email: req.user.email }] : []),
+      ],
+    };
+
+    const chats = await Chat.find(ownershipFilter)
       .select("_id title createdAt updatedAt")
       .sort({ updatedAt: -1 });
 

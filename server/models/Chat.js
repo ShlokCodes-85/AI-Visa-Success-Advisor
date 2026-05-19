@@ -8,6 +8,11 @@ const chatSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    email: {
+      type: String,
+      required: false,
+      index: true,
+    },
     title: {
       type: String,
       required: true,
@@ -36,5 +41,6 @@ const chatSchema = new mongoose.Schema(
 
 // Index for faster queries
 chatSchema.index({ userId: 1, createdAt: -1 });
+chatSchema.index({ email: 1, createdAt: -1 });
 
 export default mongoose.model("Chat", chatSchema);

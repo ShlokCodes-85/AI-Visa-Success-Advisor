@@ -34,7 +34,7 @@ Always be professional, accurate, and compliant with visa regulations."""
         """Initialize LLM provider with form mode configuration"""
         from app.utils.llm_providers import OpenAIProvider, GeminiProvider, DeepSeekProvider
         
-        api_key = self.api_key or settings.LLM_API_KEY
+        api_key = self.api_key
         
         if self.provider_name.lower() == "openai":
             return OpenAIProvider(api_key=api_key, model=self.model)

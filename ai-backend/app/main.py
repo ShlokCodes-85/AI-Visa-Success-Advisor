@@ -4,13 +4,12 @@ FastAPI main application file
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.settings import settings
-from app.routes.chat import router as chat_router
 from app.routes.form import router as form_router
 
 # Create FastAPI app
 app = FastAPI(
-    title="AI Visa Success Advisor - Chat API",
-    description="Python backend for AI-powered visa application assistance",
+    title="AI Visa Success Advisor - Form Analysis API",
+    description="Python backend for AI-powered visa application form analysis",
     version="1.0.0",
 )
 
@@ -24,7 +23,6 @@ app.add_middleware(
 )
 
 # Include routes
-app.include_router(chat_router)
 app.include_router(form_router)
 
 
@@ -32,9 +30,9 @@ app.include_router(form_router)
 async def root():
     """Root endpoint"""
     return {
-        "message": "AI Visa Success Advisor - Chat API",
+        "message": "AI Visa Success Advisor - Form Analysis API",
         "docs": "/docs",
-        "health": "/api/chat/health"
+        "health": "/api/form/health"
     }
 
 
@@ -43,8 +41,8 @@ async def health():
     """Global health check"""
     return {
         "status": "healthy",
-        "service": "AI Visa Advisor Chat API",
-        "llm_provider": settings.LLM_PROVIDER,
+        "service": "AI Visa Advisor Form Analysis API",
+        "form_llm_provider": settings.FORM_LLM_PROVIDER,
     }
 
 
