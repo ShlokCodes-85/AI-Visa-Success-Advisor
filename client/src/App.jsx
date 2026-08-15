@@ -13,7 +13,6 @@ import ApplicationForm from "./pages/FormMode/ApplicationForm";
 import Results from "./pages/Results";
 import ProfilePage from "./pages/ProfilePage";
 import { ApplicationProvider } from "./contexts/ApplicationContext";
-import StartupGate from "./components/StartupGate";
 
 function OAuthQueryHandler() {
   const location = useLocation();
@@ -60,45 +59,43 @@ function ProtectedRoute({ children }) {
 function App() {
   return (
     <ApplicationProvider>
-      <StartupGate>
-        <OAuthQueryHandler />
-        <Routes>
-          <Route path="/oauth/success" element={<OAuthSuccess />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
-          <Route
-            path="/application"
-            element={
-              <ProtectedRoute>
-                <ApplicationForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/results" element={<Results />} />
-          <Route path="/results/:analysisId" element={<Results />} />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/"
-            element={
-              <div className="w-full bg-gray-50 dark:bg-gray-900 text-black dark:text-gray-100">
-                <Navbar />
-                <Hero />
-                <Features />
-                <HowItWorks />
-                <Testimonials />
-                <FAQ />
-                <Footer />
-              </div>
-            }
-          />
-        </Routes>
-      </StartupGate>
+      <OAuthQueryHandler />
+      <Routes>
+        <Route path="/oauth/success" element={<OAuthSuccess />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route
+          path="/application"
+          element={
+            <ProtectedRoute>
+              <ApplicationForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/results" element={<Results />} />
+        <Route path="/results/:analysisId" element={<Results />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <div className="w-full bg-gray-50 dark:bg-gray-900 text-black dark:text-gray-100">
+              <Navbar />
+              <Hero />
+              <Features />
+              <HowItWorks />
+              <Testimonials />
+              <FAQ />
+              <Footer />
+            </div>
+          }
+        />
+      </Routes>
     </ApplicationProvider>
   );
 }
