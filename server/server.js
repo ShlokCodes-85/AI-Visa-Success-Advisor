@@ -136,16 +136,7 @@ app.use("/api/applications", applicationRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/analyses", analysisRoutes);
 
-// Health check route
-app.get("/", (req, res) => {
-  res.json({ 
-    message: "Visa Auth API is running",
-    mongodb: isConnected ? "connected" : "disconnected",
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Database status endpoint
+// Health check endpoint for chat mode
 app.get("/api/health", (req, res) => {
   const dbReadyState = mongoose.connection.readyState;
   const dbConnected = isConnected && dbReadyState === 1;

@@ -20,10 +20,12 @@ class Settings:
     FORM_LLM_API_KEY = os.getenv("FORM_LLM_API_KEY", "")
     FORM_LLM_MODEL = os.getenv("FORM_LLM_MODEL", "gemini-1.5-flash")
     
-    # CORS - Load from environment, with development defaults
-    _allowed_origins_str = os.getenv(
-        "ALLOWED_ORIGINS"
-    )
-    ALLOWED_ORIGINS = [origin.strip() for origin in _allowed_origins_str.split(",")]
+    # CORS - Load from environment, with sensible safe defaults
+    _allowed_origins_str = os.getenv("ALLOWED_ORIGINS", "")
+    # If not specified, allow all origins to avoid startup failure (can be tightened in production)
+    if not _allowed_origins_str:
+        ALLOWED_ORIGINS = ["*"]
+    else:
+        ALLOWED_ORIGINS = [origin.strip() for origin in _allowed_origins_str.split(",") if origin.strip()]
 
 settings = Settings()

@@ -36,14 +36,6 @@ async def root():
     }
 
 
-@app.get("/health")
-async def health():
-    """Global health check"""
-    return {
-        "status": "healthy",
-        "service": "AI Visa Advisor Form Analysis API",
-        "form_llm_provider": settings.FORM_LLM_PROVIDER,
-    }
 
 
 if __name__ == "__main__":
