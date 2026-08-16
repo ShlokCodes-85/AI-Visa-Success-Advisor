@@ -18,7 +18,7 @@ class Settings:
     # LLM Configuration for Form Mode
     FORM_LLM_PROVIDER = os.getenv("FORM_LLM_PROVIDER", "gemini")
     FORM_LLM_API_KEY = os.getenv("FORM_LLM_API_KEY", "")
-    FORM_LLM_MODEL = os.getenv("FORM_LLM_MODEL", "gemini-1.5-flash")
+    FORM_LLM_MODEL = os.getenv("FORM_LLM_MODEL", "gemini-2.5-flash")
     
     # CORS - Load from environment, with sensible safe defaults
     _allowed_origins_str = os.getenv("ALLOWED_ORIGINS", "")
